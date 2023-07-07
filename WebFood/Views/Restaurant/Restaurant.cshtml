@@ -1,0 +1,20 @@
+﻿@using WebFood.Models.Entities
+@model Restaurant
+
+<div class="mt-3 container-xl">
+    @*Main*@
+    <div class="d-flex justify-content-center">
+        <div class="col-6">
+            @*Restaurant Info*@
+            <div class="d-flex flex-column justify-content-center">
+                <img class="img-fluid" src="@Model.Imageurl" />
+                <h3 class="mt-2 text-center">@Model.Name</h3>
+                <a asp-controller="Restaurant" asp-action="Edit" asp-route-restaurantId="@Model.Id">Редактировать информацию о ресторане</a>
+                <a asp-controller="Restaurant" asp-action="ChangeImage" asp-route-restaurantId="@Model.Id">Изменить обложку</a>
+            </div>
+            @*Main Menu*@
+
+        </div>
+    </div>
+
+</div>

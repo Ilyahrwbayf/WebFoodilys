@@ -1,0 +1,33 @@
+﻿@using WebFood.Models.Entities
+@model TypeOfRestaurant
+@{
+    ViewData["Title"] = "Добавить категорию ресторана";
+}
+
+<h1 class="text-center">@ViewData["Title"]</h1>
+<h5 class="mt-3 text-center text-warning">@ViewBag.Message</h5>
+
+<div class="container-xl mt-3">
+    <div class="d-flex justify-content-center">
+        <div class="col-10 col-sm-6 col-md-6 col-lg-4">
+
+             <form asp-controller="Home" asp-action="AddTypeOfRestaurant" method="post">
+
+                 <div class="d-flex flex-column">
+                    <label asp-for="Name">Имя*</label>
+                    <input class="form-control" asp-for="Name" data-val-required="Введите имя"/>
+                    <span asp-validation-for="Name" class="text-danger mt-2"></span>
+
+                    <button class="mt-3 btn btn-primary">Подтвердить</button>
+                    <a class="mt-3" asp-controller="Home" asp-action="Admin">Назад</a>
+                 </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

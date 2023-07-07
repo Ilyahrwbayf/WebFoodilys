@@ -1,0 +1,60 @@
+﻿@using WebFood.Models.Entities;
+@using WebFood.Models.ViewModels
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Главная";
+}
+
+@*Filter*@
+<div class="mt-3 container-xl">
+    <div class="d-flex justify-content-between">
+        <div class="d-flex">
+            @for (int i = 0; i < 4; i++)
+            {
+                if (i > 0)
+                {
+                   <button class="ms-2 btn btn-secondary">@Model.Categories[i].Name</button>
+                }
+                else
+                {
+                    <button class="btn btn-secondary">@Model.Categories[i].Name</button>
+                }
+                
+            }
+        </div>
+
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Еще
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    @for (int i = 4; i < Model.Categories.Count(); i++)
+                    {
+                        <li><a class="dropdown-item" href="#">@Model.Categories[i].Name</a></li>
+                    }
+
+          </ul>
+        </div>
+
+    </div>
+</div>
+
+
+@*Main*@
+<div class="container-xl mt-3">
+    <div class="row row-cols-4 g-2">
+        @foreach (var restaurant in Model.Restaurants)
+        {
+            <div class="card">
+                <img src="@restaurant.Imageurl" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a asp-controller="Restaurant"
+                        asp-action="Restaurant" asp-route-restaurantId="@restaurant.Id">@restaurant.Name</a>
+                    </h5>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>

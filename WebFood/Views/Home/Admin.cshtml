@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Панель администратора";
+}
+
+<h1 class="text-center">@ViewData["Title"]</h1>
+
+<div class="container-xl mt-3">
+    <div class="d-flex flex-column">
+        <a asp-controller="Home" asp-action="AddRestaurant">Добавить ресторан</a>
+        <a class="mt-3" asp-controller="Home" asp-action="AddTypeOfRestaurant">Добавить категорию ресторана</a>
+    </div>
+</div>
