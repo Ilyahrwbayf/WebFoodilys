@@ -1,4 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using WebFood.Models.Entities;
+using WebFood.Service.CategoryService;
+using WebFood.Service.RestaurantService;
+using WebFood.Service.RestaurantTypeService;
+using WebFood.Service.TypeOfRestaurantService;
+using WebFood.Service.UserService;
 using WebPlanner.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +17,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("MySqlServer"),
         new MySqlServerVersion(new Version(8, 0, 31)));
 });
+
+builder.Services.AddTransient<IDaoRestaurant, DaoRestaurant>();
+builder.Services.AddTransient<IDaoTypeOfRestaurant, DaoTypeOfRestaurant>();
+builder.Services.AddTransient<IDaoRestaurantType, DaoRestaurantType>();
+builder.Services.AddTransient<IDaoUser, DaoUser>();
 
 
 var app = builder.Build();

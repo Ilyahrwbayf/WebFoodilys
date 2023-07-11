@@ -1,30 +1,41 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Hosting;
-using System;
 using System.Diagnostics;
 using WebFood.Models.Entities;
 using WebFood.Models.ViewModels;
+using WebFood.Service.CategoryService;
+using WebFood.Service.RestaurantService;
+using WebFood.Service.RestaurantTypeService;
+using WebFood.Service.UserService;
 using WebFood.Utility;
-using WebPlanner.Models;
 
 namespace WebFood.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly AppDbContext _db;
+        private readonly ILogger<HomeController> _logger;        
+        private readonly IDaoRestaurant _daoRestaurant;
+        private readonly IDaoTypeOfRestaurant _daoTypeOfRestaurant;
+        private readonly IDaoRestaurantType _daoRestaurantType;
+        private readonly IDaoUser _daoUser;
 
-        public HomeController(ILogger<HomeController> logger, AppDbContext db)
+        public HomeController(ILogger<HomeController> logger,
+                              IDaoRestaurant daoRestaurant,
+                              IDaoTypeOfRestaurant daoTypeOfRestaurant,
+                              IDaoRestaurantType daoRestaurantType,
+                              IDaoUser daoUser)
         {
             _logger = logger;
-            _db = db;
+            _daoRestaurant = daoRestaurant;
+            _daoTypeOfRestaurant = daoTypeOfRestaurant;
+            _daoRestaurantType = daoRestaurantType;
+            _daoUser = daoUser;
         }
 
         public IActionResult Index(HomeViewModel model)
         {
-            model.Restaurants = _db.Restaurants.ToList();
-            model.Categories = _db.Categories.ToList();
+            model.Restaurants = _daoRestaurant.GetAllAsync().Result;
+            model.Categories = _daoTypeOfRestaurant.GetAllAsync().Result;
             return View(model);
         }
 
@@ -41,7 +52,7 @@ namespace WebFood.Controllers
         [HttpGet]
         public IActionResult AddRestaurant(AddRestaurantVM restaurantVM)
         {
-            GetRestaurantCategories();
+            GetTypesOfRestaurants();
             return View(restaurantVM);
         }
 
@@ -50,31 +61,35 @@ namespace WebFood.Controllers
         {
             var restaurant = restaurantVM.Restaurant;
             var categoryId = restaurantVM.CategoryId;
-            GetRestaurantCategories();
+            GetTypesOfRestaurants();
 
             if (restaurant.ManagerId == 0) restaurant.ManagerId = null;
 
-            if (restaurant.ManagerId != null)
+            if (ModelState.IsValid)
             {
-                if (_db.Users.Select(u => u.Id == restaurant.ManagerId).Any())
+
+                if (restaurant.ManagerId != null)
                 {
-                    AddRestaurantToDb(restaurant, categoryId, Imageurl);
+                    if (_daoUser.GetAsync(Convert.ToInt32(restaurant.ManagerId)).Result != null)
+                    {
+                        AddRestaurantToDb(restaurant, categoryId, Imageurl);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Restaurant.ManagerId", "Пользователь с таким id не найден");
+                    }
                 }
                 else
                 {
-                    ViewBag.Message = "Неверный id пользователя";
+                    AddRestaurantToDb(restaurant, categoryId, Imageurl);
                 }
-            }
-            else
-            {
-                AddRestaurantToDb(restaurant, categoryId, Imageurl);
             }
             return View(restaurantVM);
         }
 
-        private void GetRestaurantCategories()
+        private void GetTypesOfRestaurants()
         {
-            var categories = _db.Categories.ToList();
+            var categories = _daoTypeOfRestaurant.GetAllAsync().Result;
             ViewBag.RestaurantCategories = new SelectList(categories, "Id", "Name");
         }
 
@@ -83,11 +98,9 @@ namespace WebFood.Controllers
             
             restaurant.Imageurl = GetImageUrl(Imageurl).Result.ToString();
 
-            _db.Restaurants.Add(restaurant);
-            _db.SaveChanges();
+            _daoRestaurant.AddAsync(restaurant);
 
-            _db.RestaurantType.Add(new RestaurantType(restaurant.Id, categoryId));
-            _db.SaveChanges();
+            _daoRestaurantType.AddAsync(new RestaurantType(restaurant.Id, categoryId));
             ViewBag.Message = "Ресторан " + restaurant.Name + " добавлен";
         }
 
@@ -112,9 +125,11 @@ namespace WebFood.Controllers
         [HttpPost]
         public IActionResult AddTypeOfRestaurant(TypeOfRestaurant typeOfRestaurant, IFormCollection formValues)
         {
-            _db.Categories.Add(typeOfRestaurant);
-            _db.SaveChanges();
-            ViewBag.Message = "Категория " + typeOfRestaurant.Name + " добавлена";
+            if (ModelState.IsValid)
+            {
+                _daoTypeOfRestaurant.AddAsync(typeOfRestaurant);
+                ViewBag.Message = "Категория " + typeOfRestaurant.Name + " добавлена";
+            }
             return View(typeOfRestaurant);
         }
 
