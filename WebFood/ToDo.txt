@@ -1,2 +1,5 @@
 ﻿User Service - done 
-ModelState Check
+ModelState Check - done
+role - done
+authentification & authorization
+password encryption

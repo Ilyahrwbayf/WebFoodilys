@@ -17,6 +17,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("MySqlServer"),
         new MySqlServerVersion(new Version(8, 0, 31)));
 });
+builder.Services.AddAuthentication("Cookies").AddCookie(options =>
+{
+    options.LoginPath = "/Access/Login";
+    options.ExpireTimeSpan = TimeSpan.FromHours(168); // неделя
+});
+
 
 builder.Services.AddTransient<IDaoRestaurant, DaoRestaurant>();
 builder.Services.AddTransient<IDaoTypeOfRestaurant, DaoTypeOfRestaurant>();
@@ -39,6 +45,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

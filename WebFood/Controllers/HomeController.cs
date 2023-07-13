@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 using WebFood.Models.Entities;
@@ -44,12 +45,14 @@ namespace WebFood.Controllers
             return View();
         }
 
+        [Authorize(Roles ="Administrator")]
         public IActionResult Admin()
         {
             return View();
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator")]
         public IActionResult AddRestaurant(AddRestaurantVM restaurantVM)
         {
             GetTypesOfRestaurants();
@@ -57,6 +60,7 @@ namespace WebFood.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public IActionResult AddRestaurant(AddRestaurantVM restaurantVM, [FromForm(Name = "Restaurant.Imageurl")]IFormFile Imageurl)
         {
             var restaurant = restaurantVM.Restaurant;
@@ -117,12 +121,14 @@ namespace WebFood.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator")]
         public IActionResult AddTypeOfRestaurant(TypeOfRestaurant typeOfRestaurant)
         {
             return View(typeOfRestaurant);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public IActionResult AddTypeOfRestaurant(TypeOfRestaurant typeOfRestaurant, IFormCollection formValues)
         {
             if (ModelState.IsValid)

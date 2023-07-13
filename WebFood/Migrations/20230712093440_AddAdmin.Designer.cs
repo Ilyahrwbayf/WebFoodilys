@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebPlanner.Models;
 
@@ -10,9 +11,11 @@ using WebPlanner.Models;
 namespace WebFood.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230712093440_AddAdmin")]
+    partial class AddAdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,7 +147,6 @@ namespace WebFood.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Phone")
@@ -174,15 +176,6 @@ namespace WebFood.Migrations
                             Phone = "",
                             RoleId = 3,
                             UserId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DeliveryAdres = "",
-                            Name = "Alexandr",
-                            Phone = "",
-                            RoleId = 2,
-                            UserId = 2
                         });
                 });
 
@@ -256,7 +249,6 @@ namespace WebFood.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Password")
@@ -273,12 +265,6 @@ namespace WebFood.Migrations
                             Id = 1,
                             Email = "admin@admin.com",
                             Password = "admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Email = "Managment@KFSmail.com",
-                            Password = "KFS"
                         });
                 });
 

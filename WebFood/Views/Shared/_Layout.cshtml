@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -13,16 +14,43 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebFood</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">WebFood</a>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Admin">Панель администратора</a>
-                        </li>
+
+                    <ul class="navbar-nav col-6 justify-content-start">
+                        @if (this.User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Admin">Панель администратора</a>
+                            </li>
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav col-6 justify-content-end">
+                        @if (!this.User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Access" asp-action="Login">Войти</a>
+                            </li>
+                        }
+                        @if (!this.User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Access" asp-action="Register">Регистрация</a>
+                            </li>
+                        }
+                        @if (this.User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="" asp-action="">@this.User.FindFirstValue(ClaimTypes.Email)</a>
+                            </li>
+                        }
+                        @if (this.User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Access" asp-action="LogOut">Выйти</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

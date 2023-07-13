@@ -10,6 +10,8 @@ using WebFood.Service.CategoryService;
 using WebFood.Service.TypeOfRestaurantService;
 using WebFood.Service.RestaurantTypeService;
 using WebFood.Service.UserService;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace WebFood.Controllers
 {
@@ -37,74 +39,112 @@ namespace WebFood.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator, Manager")]
         public IActionResult Edit(int restaurantId)
         {
             var restaurant = GetRestaurant(restaurantId);
-            AddRestaurantVM restaurantVM = new AddRestaurantVM();
-            restaurantVM.Restaurant = restaurant;
-            restaurantVM.CategoryId = GetRestaurantType(restaurantId);
-            GetTypesOfRestaurant();
-            return View(restaurantVM);
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
+                || User.IsInRole("Administrator"))
+            {
+                AddRestaurantVM restaurantVM = new AddRestaurantVM();
+                restaurantVM.Restaurant = restaurant;
+                restaurantVM.CategoryId = GetRestaurantType(restaurantId);
+                GetTypesOfRestaurant();
+                return View(restaurantVM);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, Manager")]
         public IActionResult Edit(AddRestaurantVM restaurantVM)
         {
             var restaurant = restaurantVM.Restaurant;
-            if (restaurant.ManagerId == 0) restaurant.ManagerId = null;
 
-            if (ModelState.IsValid)
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
+               || User.IsInRole("Administrator"))
             {
+                if (restaurant.ManagerId == 0) restaurant.ManagerId = null;
 
-                if (restaurant.ManagerId != null)
+                if (ModelState.IsValid)
                 {
-                    if (_daoUser.GetAsync(Convert.ToInt32(restaurant.ManagerId)).Result != null)
+
+                    if (restaurant.ManagerId != null)
+                    {
+                        if (_daoUser.GetAsync(Convert.ToInt32(restaurant.ManagerId)).Result != null)
+                        {
+                            _daoRestaurant.Update(restaurantVM.Restaurant);
+                            ViewBag.Message = "Информация изменена";
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("Restaurant.ManagerId", "Пользователь с таким id не найден");
+                        }
+                    }
+                    else
                     {
                         _daoRestaurant.Update(restaurantVM.Restaurant);
                         ViewBag.Message = "Информация изменена";
                     }
-                    else
-                    {
-                        ModelState.AddModelError("Restaurant.ManagerId", "Пользователь с таким id не найден");
-                    }
                 }
-                else
-                {
-                    _daoRestaurant.Update(restaurantVM.Restaurant);
-                    ViewBag.Message = "Информация изменена";
-                }
+                GetTypesOfRestaurant();
+                return View(restaurantVM);
+
             }
-            return View(restaurantVM);
+            else
+                return RedirectToAction("Index", "Home");
+
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator, Manager")]
         public IActionResult ChangeImage(int restaurantId)
         {
             var restaurant = GetRestaurant(restaurantId);
-            return View(restaurant);
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
+                                    || User.IsInRole("Administrator"))
+            {
+                return View(restaurant);
+            }
+            else
+                return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, Manager")]
         public IActionResult ChangeImage(Restaurant restaurant, [FromForm(Name = "Imageurl")] IFormFile Imageurl)
         {
-            if (ModelState.IsValid)
+            restaurant = GetRestaurant(restaurant.Id);
+
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
+                                    || User.IsInRole("Administrator"))
             {
-                restaurant = GetRestaurant(restaurant.Id);
+                if (ModelState.IsValid)
+                {
 
-                string filePath = "wwwroot/"+restaurant.Imageurl;
+                    string filePath = "wwwroot/" + restaurant.Imageurl;
 
 
-                if (System.IO.File.Exists(filePath)) {
-                    System.IO.File.Delete(filePath);
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+
+                    restaurant.Imageurl = GetImageUrl(Imageurl).Result.ToString();
+
+                    _daoRestaurant.Update(restaurant);
+
+                    ViewBag.Message = "Обложка изменена";
                 }
-
-                restaurant.Imageurl = GetImageUrl(Imageurl).Result.ToString();
-
-                _daoRestaurant.Update(restaurant);
-
-                ViewBag.Message = "Обложка изменена";
+                return View(restaurant);
             }
-            return View(restaurant);
+            else
+                return RedirectToAction("Index", "Home");
         }
 
         private async Task<string> GetImageUrl(IFormFile Imageurl)
