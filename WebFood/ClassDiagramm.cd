@@ -75,8 +75,8 @@
       <FileName>Models\Entities\Profile.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="User" />
       <Property Name="Role" />
+      <Property Name="User" />
     </ShowAsAssociation>
   </Class>
   <Class Name="WebFood.Models.Entities.CategoryOfMeal">

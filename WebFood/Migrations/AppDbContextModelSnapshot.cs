@@ -164,26 +164,6 @@ namespace WebFood.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Profiles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DeliveryAdres = "",
-                            Name = "Admin",
-                            Phone = "",
-                            RoleId = 3,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DeliveryAdres = "",
-                            Name = "Alexandr",
-                            Phone = "",
-                            RoleId = 2,
-                            UserId = 2
-                        });
                 });
 
             modelBuilder.Entity("WebFood.Models.Entities.Restaurant", b =>
@@ -266,20 +246,6 @@ namespace WebFood.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "admin@admin.com",
-                            Password = "admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Email = "Managment@KFSmail.com",
-                            Password = "KFS"
-                        });
                 });
 
             modelBuilder.Entity("WebFood.Models.Entities.UserRole", b =>
@@ -295,23 +261,6 @@ namespace WebFood.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Customer"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Manager"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Administrator"
-                        });
                 });
 
             modelBuilder.Entity("WebFood.Models.Entities.Meal", b =>

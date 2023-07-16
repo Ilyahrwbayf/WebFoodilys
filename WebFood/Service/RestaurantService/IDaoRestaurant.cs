@@ -9,5 +9,6 @@ namespace WebFood.Service.RestaurantService
         public void Update(Restaurant restaurant);
         public void DeleteAsync(int id);
         public Task<Restaurant> GetAsync(int id);
+        public Task<List<Meal>> GetMealsAsync(int id);
     }
 }

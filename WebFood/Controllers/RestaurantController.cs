@@ -33,7 +33,9 @@ namespace WebFood.Controllers
         }
         public IActionResult Restaurant(int restaurantId)
         {
-           var restaurant = GetRestaurant(restaurantId);
+           Restaurant restaurant = GetRestaurant(restaurantId);
+           List<Meal> meals = _daoRestaurant.GetMealsAsync(restaurantId).Result;
+           ViewBag.Meals = meals;
            ViewData["Title"] = restaurant.Name;
            return View(restaurant);
         }

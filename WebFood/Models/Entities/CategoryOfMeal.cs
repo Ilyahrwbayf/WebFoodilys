@@ -8,5 +8,10 @@
         {
             Name = name;
         }
+
+        public CategoryOfMeal()
+        {
+            Name = string.Empty;
+        }
     }
 }

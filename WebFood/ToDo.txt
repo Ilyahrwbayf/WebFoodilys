@@ -1,5 +1,8 @@
 ﻿User Service - done 
 ModelState Check - done
 role - done
-authentification & authorization
-password encryption
+authentification & authorization  - done
+password encryption - done
+db initilizer - done
+products - done
+pagination

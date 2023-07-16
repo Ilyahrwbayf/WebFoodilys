@@ -37,5 +37,10 @@ namespace WebFood.Service.RestaurantService
             _db.Restaurants.Update(restaurant);
             _db.SaveChanges();
         }
+
+        public async Task<List<Meal>> GetMealsAsync(int id)
+        {
+            return await _db.Meals.Where(m=>m.RestaurantId == id).ToListAsync();
+        }
     }
 }

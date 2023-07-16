@@ -5,7 +5,7 @@
 <div class="mt-3 container-xl">
     @*Main*@
     <div class="d-flex justify-content-center">
-        <div class="col-6">
+        <div class="col-8">
             @*Restaurant Info*@
             <div class="d-flex flex-column justify-content-center">
                 <img class="img-fluid" src="@Model.Imageurl" />
@@ -21,6 +21,22 @@
                 }
             </div>
             @*Main Menu*@
+            <div class="row row-cols-4 g-2">
+                @foreach (var meal in ViewBag.Meals)
+                {
+                    <div class="card">
+                        <img src="@meal.ImageUrl" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                @meal.Name
+                            </h4>
+                            <h5>
+                                @meal.Price Р
+                            </h5>
+                        </div>
+                    </div>
+                }
+            </div>
 
         </div>
     </div>

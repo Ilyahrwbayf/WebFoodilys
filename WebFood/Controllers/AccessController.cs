@@ -6,6 +6,7 @@ using WebFood.Models.Entities;
 using WebPlanner.Models;
 using WebFood.Models.ViewModels;
 using WebFood.Service.UserService;
+using WebFood.Utility;
 
 namespace WebFood.Controllers
 {
@@ -42,7 +43,8 @@ namespace WebFood.Controllers
                 }
                 else
                 {
-                    if (user != null && user.Password == loginViewModel.Password)
+                    loginViewModel.Password = PasswordHasher.Hash(loginViewModel.Password);
+                    if (user.Password == loginViewModel.Password)
                     {
                         string role = _daoUser.GetUserRole(user.Id).Result;
                         List<Claim> claims = new List<Claim>()

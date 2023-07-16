@@ -11,8 +11,8 @@ using WebPlanner.Models;
 namespace WebFood.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230607105843_update")]
-    partial class update
+    [Migration("20230715102619_initDb")]
+    partial class initDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,7 +22,7 @@ namespace WebFood.Migrations
                 .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("WebFood.Models.Entities.Category", b =>
+            modelBuilder.Entity("WebFood.Models.Entities.CategoryOfMeal", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,13 +34,22 @@ namespace WebFood.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("CategoriesOfMeals");
                 });
 
             modelBuilder.Entity("WebFood.Models.Entities.Meal", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<double?>("Calories")
+                        .HasColumnType("double");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CategoryOfMealId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
@@ -63,7 +72,12 @@ namespace WebFood.Migrations
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int");
 
+                    b.Property<double?>("Weight")
+                        .HasColumnType("double");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryOfMealId");
 
                     b.HasIndex("RestaurantId");
 
@@ -79,14 +93,8 @@ namespace WebFood.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("GuestAdres")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("GuestName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("GuestPhone")
-                        .HasColumnType("longtext");
+                    b.Property<int>("ProfileId")
+                        .HasColumnType("int");
 
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int");
@@ -98,14 +106,11 @@ namespace WebFood.Migrations
                     b.Property<double>("TotalPrice")
                         .HasColumnType("double");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("RestaurantId");
+                    b.HasIndex("ProfileId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("RestaurantId");
 
                     b.ToTable("Orders");
                 });
@@ -131,17 +136,13 @@ namespace WebFood.Migrations
                     b.ToTable("OrderMeal");
                 });
 
-            modelBuilder.Entity("WebFood.Models.Entities.Restaurant", b =>
+            modelBuilder.Entity("WebFood.Models.Entities.Profile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Imageurl")
+                    b.Property<string>("DeliveryAdres")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -149,30 +150,86 @@ namespace WebFood.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Restaurants");
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Profiles");
                 });
 
-            modelBuilder.Entity("WebFood.Models.Entities.RestaurantCategory", b =>
+            modelBuilder.Entity("WebFood.Models.Entities.Restaurant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Imageurl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("ManagerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
+
+                    b.ToTable("Restaurants");
+                });
+
+            modelBuilder.Entity("WebFood.Models.Entities.RestaurantType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int>("TypeId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("CategoryId");
+                    b.HasKey("Id");
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("RestaurantCategory");
+                    b.HasIndex("TypeId");
+
+                    b.ToTable("RestaurantType");
+                });
+
+            modelBuilder.Entity("WebFood.Models.Entities.TypeOfRestaurant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TypesOfRestaurants");
                 });
 
             modelBuilder.Entity("WebFood.Models.Entities.User", b =>
@@ -182,59 +239,67 @@ namespace WebFood.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.HasKey("Id");
 
-                    b.Property<int?>("RestaurantId")
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("WebFood.Models.Entities.UserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Role")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RestaurantId");
-
-                    b.ToTable("Users");
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("WebFood.Models.Entities.Meal", b =>
                 {
+                    b.HasOne("WebFood.Models.Entities.CategoryOfMeal", "CategoryOfMeal")
+                        .WithMany()
+                        .HasForeignKey("CategoryOfMealId");
+
                     b.HasOne("WebFood.Models.Entities.Restaurant", "Restaurant")
                         .WithMany()
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CategoryOfMeal");
 
                     b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("WebFood.Models.Entities.Order", b =>
                 {
+                    b.HasOne("WebFood.Models.Entities.Profile", "Profile")
+                        .WithMany()
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WebFood.Models.Entities.Restaurant", "Restaurant")
                         .WithMany()
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebFood.Models.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                    b.Navigation("Profile");
 
                     b.Navigation("Restaurant");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("WebFood.Models.Entities.OrderMeal", b =>
@@ -256,32 +321,49 @@ namespace WebFood.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("WebFood.Models.Entities.RestaurantCategory", b =>
+            modelBuilder.Entity("WebFood.Models.Entities.Profile", b =>
                 {
-                    b.HasOne("WebFood.Models.Entities.Category", "Category")
+                    b.HasOne("WebFood.Models.Entities.UserRole", "Role")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WebFood.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WebFood.Models.Entities.Restaurant", b =>
+                {
+                    b.HasOne("WebFood.Models.Entities.Profile", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId");
+
+                    b.Navigation("Manager");
+                });
+
+            modelBuilder.Entity("WebFood.Models.Entities.RestaurantType", b =>
+                {
                     b.HasOne("WebFood.Models.Entities.Restaurant", "Restaurant")
                         .WithMany()
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
-
-                    b.Navigation("Restaurant");
-                });
-
-            modelBuilder.Entity("WebFood.Models.Entities.User", b =>
-                {
-                    b.HasOne("WebFood.Models.Entities.Restaurant", "Restaurant")
+                    b.HasOne("WebFood.Models.Entities.TypeOfRestaurant", "Type")
                         .WithMany()
-                        .HasForeignKey("RestaurantId");
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Restaurant");
+
+                    b.Navigation("Type");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebFood.Models.Entities;
+using WebFood.Utility;
 
 namespace WebPlanner.Models
 {
@@ -19,24 +20,6 @@ namespace WebPlanner.Models
         public DbSet<Meal> Meals { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderMeal> OrderMeal { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<User>().HasData(
-                new User() { Id=1, Email="admin@admin.com", Password="admin"},
-                new User() { Id=2, Email="Managment@KFSmail.com", Password = "KFS"}
-                );
-
-            modelBuilder.Entity<UserRole>().HasData(
-                new UserRole() { Id=1, Name = "Customer"},
-                new UserRole() { Id=2, Name = "Manager"},
-                new UserRole() { Id=3, Name = "Administrator"}                
-                );
-            modelBuilder.Entity<Profile>().HasData(
-            new Profile() {Id=1,Name="Admin",RoleId=3,UserId=1},
-            new Profile() { Id=2,Name="Alexandr",RoleId=2,UserId=2}
-            );
-        }
         
     }
 }

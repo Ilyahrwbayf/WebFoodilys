@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebFood.Models.Entities;
 using WebFood.Models.ViewModels;
+using WebFood.Utility;
 using WebPlanner.Models;
 
 namespace WebFood.Service.UserService
@@ -24,6 +25,7 @@ namespace WebFood.Service.UserService
 
         public async void AddAsync(User user)
         {
+            user.Password = PasswordHasher.Hash(user.Password);
             await _db.Users.AddAsync(user);
             _db.SaveChanges();
             await _db.Profiles.AddAsync(new Profile { UserId = user.Id, RoleId = 1 });
@@ -32,11 +34,6 @@ namespace WebFood.Service.UserService
 
         public async Task<string> GetUserRole(int userId)
         {
-          //  var userRoles = await _db.UserRoles.ToListAsync();
-          //  var profile = await _db.Profiles.FirstOrDefaultAsync(p=>p.UserId== userId);
-           // var roleId = profile.RoleId;
-          //  var role = userRoles.FirstOrDefault(r=>r.Id==roleId).Name;
-         //   return role;
             return  _db.Profiles.Include(p=>p.Role).FirstOrDefault(p=>p.UserId == userId).Role.Name;
         }
     }
