@@ -3,13 +3,28 @@
 @model Restaurant
 
 <div class="mt-3 container-xl">
-    @*Main*@
-    <div class="d-flex justify-content-center">
+    <div class="row">
+        @*Menu*@
+        <div class="col-2">
+            <div class="sticky-top pt-3">
+                <div class="menu d-flex flex-column align-items-start p-3 pt-0">
+                    <a class="text-decoration-none" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-arrow-left"></i>
+                        <span class="">Назад</span>
+                    </a>
+                    <h2>Меню</h2>
+                    <button class="mt-3 btn btn-light btn-block">Пункт меню</button>
+                    <button class="mt-3 btn btn-light btn-block">Пункт меню</button>
+                    <button class="mt-3 btn btn-light btn-block">Пункт меню</button>
+                </div>
+            </div>
+        </div>
+        @*Main*@
         <div class="col-8">
             @*Restaurant Info*@
             <div class="d-flex flex-column justify-content-center">
                 <img class="img-fluid" src="@Model.Imageurl" />
-                <h3 class="mt-2 text-center">@Model.Name</h3>
+                <h1 class="mt-2 text-center">@Model.Name</h1>
                 @if (this.User.IsInRole("Administrator") ||
                 (this.User.IsInRole("Manager")
                 && this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.ManagerId.ToString()))
@@ -18,10 +33,12 @@
                        asp-route-restaurantId="@Model.Id">Редактировать информацию о ресторане</a>
                     <a asp-controller="Restaurant" asp-action="ChangeImage"
                         asp-route-restaurantId="@Model.Id">Изменить обложку</a>
+                    <a asp-controller="Restaurant" asp-action="AddMeal"
+                    asp-route-restaurantId="@Model.Id">Добавить блюдо</a>
                 }
             </div>
-            @*Main Menu*@
-            <div class="row row-cols-4 g-2">
+            @*Meals*@
+            <div class="mt-3 row row-cols-4 g-2">
                 @foreach (var meal in ViewBag.Meals)
                 {
                     <div class="card">
@@ -30,14 +47,31 @@
                             <h4 class="card-title">
                                 @meal.Name
                             </h4>
+                            @if (meal.Description != null)
+                            {
+                                <div>@meal.Description</div>
+                            }
+                            <div class="d-flex justify-content-between">
+                                <span>@meal.Weight г</span>
+                                <span>@meal.Calories ккал</span>
+                            </div>
                             <h5>
-                                @meal.Price Р
+                                @meal.Price &#8381;
                             </h5>
+                            <button class="btn btn-primary">Добавить</button>
                         </div>
                     </div>
                 }
             </div>
-
+        </div>
+        @*Bucket*@
+        <div class="col-2">
+            <div class="sticky-top pt-3">
+                <div class="menu d-flex flex-column align-items-start p-3 pt-0">
+                    <h2>Корзина</h2>
+                    
+                </div>
+            </div>
         </div>
     </div>
 

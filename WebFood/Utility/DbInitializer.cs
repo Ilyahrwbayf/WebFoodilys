@@ -43,9 +43,9 @@ namespace WebFood.Utility
 
             if (!db.Profiles.Any())
             {
-                db.Profiles.Add(new Profile() { Id = 1, Name = "Admin", RoleId = 1, UserId = 1 });
+                db.Profiles.Add(new Profile() { Id = 1, Name = "Admin", RoleId = 3, UserId = 1 });
                 db.Profiles.Add(new Profile() { Id = 2, Name = "Victor", RoleId = 2, UserId = 2 });
-                db.Profiles.Add(new Profile() { Id = 3, Name = "Alexandr", RoleId = 3, UserId = 3 });
+                db.Profiles.Add(new Profile() { Id = 3, Name = "Alexandr", RoleId = 1, UserId = 3 });
                 db.SaveChanges();
             }
 

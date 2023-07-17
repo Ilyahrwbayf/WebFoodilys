@@ -1,16 +1,20 @@
-﻿using WebFood.Models.Entities;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using WebFood.Models.Entities;
 
 namespace WebFood.Models.ViewModels
 {
     public class HomeViewModel
     {
         public List<Restaurant> Restaurants { get; set; }
-        public List <TypeOfRestaurant> Categories { get; set; }
+        public SelectList? Types { get; set; }
+        public int TypeId { get; set; }
+        public string SearchString { get; set; }
 
         public HomeViewModel()
         {
             Restaurants = new List<Restaurant>();
-            Categories = new List<TypeOfRestaurant>();
+            TypeId = 0;
+            SearchString = string.Empty;
         }
     }
 }

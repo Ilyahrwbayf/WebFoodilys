@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using WebFood.Models.Entities;
 using WebPlanner.Models;
 
@@ -41,6 +42,42 @@ namespace WebFood.Service.RestaurantService
         public async Task<List<Meal>> GetMealsAsync(int id)
         {
             return await _db.Meals.Where(m=>m.RestaurantId == id).ToListAsync();
+        }
+
+        public async Task<List<Restaurant>> GetBySearchAsync(int typeId, string searchString)
+        {
+            var request = _db.RestaurantType.Include(rt => rt.Restaurant);
+
+
+            if (typeId != 0 && searchString != null)
+            {
+                 return await request
+                     .Where(rt => rt.TypeId == typeId)
+                     .Where(rt => rt.Restaurant.Name.Contains(searchString))
+                     .Select(rt => rt.Restaurant)
+                     .ToListAsync();
+            }
+            if (typeId != 0)
+            {
+                return  await request
+                    .Where(rt => rt.TypeId == typeId)
+                    .Select(rt => rt.Restaurant)
+                    .ToListAsync();
+            }
+            if (searchString != null)
+            {
+                return await request
+                    .Where(rt => rt.Restaurant.Name.Contains(searchString))
+                    .Select(rt => rt.Restaurant)
+                    .ToListAsync();
+            }
+
+            var restaurants = await request
+            .Select(rt => rt.Restaurant)
+            .ToListAsync();
+
+            return restaurants;
+            
         }
     }
 }

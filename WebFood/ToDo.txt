@@ -5,4 +5,6 @@ authentification & authorization  - done
 password encryption - done
 db initilizer - done
 products - done
+icontains
 pagination
+basket

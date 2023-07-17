@@ -32,13 +32,32 @@ namespace WebFood.Controllers
             _daoRestaurantType = daoRestaurantType;
             _daoUser = daoUser;
         }
-
+        [HttpGet]
         public IActionResult Index(HomeViewModel model)
         {
             model.Restaurants = _daoRestaurant.GetAllAsync().Result;
-            model.Categories = _daoTypeOfRestaurant.GetAllAsync().Result;
+            model.Types = new SelectList(MakeTypedFilterList(), "Id", "Name");
             return View(model);
         }
+
+        [HttpPost]
+        public IActionResult Index(HomeViewModel model, IFormCollection formValues)
+        {
+            model.Types = new SelectList(MakeTypedFilterList(), "Id", "Name");
+            model.Restaurants = _daoRestaurant.GetBySearchAsync(model.TypeId, model.SearchString).Result;
+            return View(model);
+        }
+
+        public List<TypeOfRestaurant> MakeTypedFilterList()
+        {
+            List<TypeOfRestaurant> types = new List<TypeOfRestaurant>
+            {
+                new TypeOfRestaurant() { Id = 0, Name = "Все" }
+            };
+            types.AddRange(_daoTypeOfRestaurant.GetAllAsync().Result);
+            return types;
+        }
+
 
         public IActionResult Privacy()
         {
