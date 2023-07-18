@@ -1,0 +1,36 @@
+﻿@using WebFood.Models.Entities
+@model TypeOfRestaurant
+@{
+    ViewData["Title"] = "Изменить категорию ресторана";
+}
+
+<h1 class="text-center">@ViewData["Title"]</h1>
+
+<div class="container-xl mt-3">
+    <div class="d-flex justify-content-center">
+        <div class="col-10 col-sm-6 col-md-6 col-lg-4">
+
+            <form asp-controller="Home" asp-action="EditTypeOfRestaurant" method="post">
+
+                <div class="d-flex flex-column">
+
+                    <label asp-for="Name">Категория</label>
+                    <select class="form-select" asp-for="Id" asp-items="ViewBag.RestaurantCategories"></select>
+
+                    <label class="mt-3" asp-for="Name">Новое имя*</label>
+                    <input class="form-control" asp-for="Name" data-val-required="Введите имя" />
+                    <span asp-validation-for="Name" class="text-danger mt-2"></span>
+
+                    <button class="mt-3 btn btn-primary">Подтвердить</button>
+                    <a class="mt-3" asp-controller="Home" asp-action="Admin">Назад</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <partial name="_ValidationScriptsPartial" />
+}

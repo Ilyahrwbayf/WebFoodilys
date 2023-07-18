@@ -110,35 +110,6 @@ namespace WebFood.Controllers
             return View(restaurantVM);
         }
 
-        private void GetTypesOfRestaurants()
-        {
-            var categories = _daoTypeOfRestaurant.GetAllAsync().Result;
-            ViewBag.RestaurantCategories = new SelectList(categories, "Id", "Name");
-        }
-
-        private void AddRestaurantToDb(Restaurant restaurant, int categoryId, IFormFile Imageurl)
-        {
-            
-            restaurant.Imageurl = GetImageUrl(Imageurl).Result.ToString();
-
-            _daoRestaurant.AddAsync(restaurant);
-
-            _daoRestaurantType.AddAsync(new RestaurantType(restaurant.Id, categoryId));
-            ViewBag.Message = "Ресторан " + restaurant.Name + " добавлен";
-        }
-
-        private async Task<string> GetImageUrl(IFormFile Imageurl)
-        {
-            string url = "";
-            try
-            {
-               url = await FileUploadHelper.Upload(Imageurl);
-               
-            }
-            catch (Exception) {}
-            return url;
-        }
-
         [HttpGet]
         [Authorize(Roles = "Administrator")]
         public IActionResult AddTypeOfRestaurant(TypeOfRestaurant typeOfRestaurant)
@@ -158,6 +129,76 @@ namespace WebFood.Controllers
             return View(typeOfRestaurant);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult EditTypeOfRestaurant()
+        {
+            GetTypesOfRestaurants();
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult EditTypeOfRestaurant(TypeOfRestaurant typeOfRestaurant)
+        {
+            GetTypesOfRestaurants();
+            if (ModelState.IsValid)
+            {
+                _daoTypeOfRestaurant.Update(typeOfRestaurant);
+                ViewBag.Message = "Категория изменена на" + typeOfRestaurant.Name;
+            }
+            return View(typeOfRestaurant);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult DeleteTypeOfRestaurant()
+        {
+            GetTypesOfRestaurants();
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult DeleteTypeOfRestaurant(TypeOfRestaurant typeOfRestaurant)
+        {
+            if (ModelState.IsValid)
+            {
+                _daoTypeOfRestaurant.Delete(typeOfRestaurant.Id);
+                ViewBag.Message = "Категория " + typeOfRestaurant.Name+ " удалена";
+            }
+            GetTypesOfRestaurants();
+            return View(typeOfRestaurant);
+        }
+
+        private void GetTypesOfRestaurants()
+        {
+            var categories = _daoTypeOfRestaurant.GetAllAsync().Result;
+            ViewBag.RestaurantCategories = new SelectList(categories, "Id", "Name");
+        }
+
+        private void AddRestaurantToDb(Restaurant restaurant, int categoryId, IFormFile Imageurl)
+        {
+
+            restaurant.Imageurl = GetImageUrl(Imageurl).Result.ToString();
+
+            _daoRestaurant.AddAsync(restaurant);
+
+            _daoRestaurantType.AddAsync(new RestaurantType(restaurant.Id, categoryId));
+            ViewBag.Message = "Ресторан " + restaurant.Name + " добавлен";
+        }
+
+        private async Task<string> GetImageUrl(IFormFile Imageurl)
+        {
+            string url = "";
+            try
+            {
+                url = await FileUploadHelper.Upload(Imageurl);
+
+            }
+            catch (Exception) { }
+            return url;
+        }
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

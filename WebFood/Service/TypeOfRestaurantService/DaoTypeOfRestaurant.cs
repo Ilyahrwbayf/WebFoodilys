@@ -18,9 +18,11 @@ namespace WebFood.Service.TypeOfRestaurantService
             _db.SaveChanges();
         }
 
-        public void DeleteAsync(int id)
+        public void Delete(int id)
         {
-            throw new NotImplementedException();
+            TypeOfRestaurant typeOfRestaurant = GetAsync(id).Result;
+            _db.TypesOfRestaurants.Remove(typeOfRestaurant);
+            _db.SaveChanges();
         }
 
         public async Task<List<TypeOfRestaurant>> GetAllAsync()
@@ -28,14 +30,15 @@ namespace WebFood.Service.TypeOfRestaurantService
            return await _db.TypesOfRestaurants.ToListAsync();
         }
 
-        public Task<TypeOfRestaurant> GetAsync(int id)
+        public async Task<TypeOfRestaurant> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _db.TypesOfRestaurants.FindAsync(id);
         }
 
         public void Update(TypeOfRestaurant typeOfRestaurant)
         {
-            throw new NotImplementedException();
+            _db.TypesOfRestaurants.Update(typeOfRestaurant);
+            _db.SaveChanges();
         }
     }
 }

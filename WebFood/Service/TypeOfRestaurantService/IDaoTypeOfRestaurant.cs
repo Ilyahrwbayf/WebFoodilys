@@ -7,7 +7,7 @@ namespace WebFood.Service.CategoryService
         public Task<List<TypeOfRestaurant>> GetAllAsync();
         public void AddAsync(TypeOfRestaurant typeOfRestaurant);
         public void Update(TypeOfRestaurant typeOfRestaurant);
-        public void DeleteAsync(int id);
+        public void Delete(int id);
         public Task<TypeOfRestaurant> GetAsync(int id);
     }
 }
