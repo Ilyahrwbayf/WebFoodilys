@@ -2,7 +2,7 @@
 using WebFood.Models.Entities;
 using WebFood.Utility;
 
-namespace WebPlanner.Models
+namespace WebFood.Models
 {
     public class AppDbContext : DbContext
     {

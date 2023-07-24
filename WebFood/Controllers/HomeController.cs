@@ -90,7 +90,6 @@ namespace WebFood.Controllers
 
             if (ModelState.IsValid)
             {
-
                 if (restaurant.ManagerId != null)
                 {
                     if (_daoUser.GetAsync(Convert.ToInt32(restaurant.ManagerId)).Result != null)
@@ -141,12 +140,12 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator")]
         public IActionResult EditTypeOfRestaurant(TypeOfRestaurant typeOfRestaurant)
         {
-            GetTypesOfRestaurants();
             if (ModelState.IsValid)
             {
                 _daoTypeOfRestaurant.Update(typeOfRestaurant);
                 ViewBag.Message = "Категория изменена на" + typeOfRestaurant.Name;
             }
+            GetTypesOfRestaurants();
             return View(typeOfRestaurant);
         }
 

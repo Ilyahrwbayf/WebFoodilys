@@ -6,7 +6,7 @@ using WebFood.Service.RestaurantTypeService;
 using WebFood.Service.TypeOfRestaurantService;
 using WebFood.Service.UserService;
 using WebFood.Utility;
-using WebPlanner.Models;
+using WebFood.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

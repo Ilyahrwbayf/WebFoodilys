@@ -2,7 +2,7 @@
 using WebFood.Models.Entities;
 using WebFood.Models.ViewModels;
 using WebFood.Utility;
-using WebPlanner.Models;
+using WebFood.Models;
 
 namespace WebFood.Service.UserService
 {

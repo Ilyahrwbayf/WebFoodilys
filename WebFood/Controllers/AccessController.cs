@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebFood.Models.Entities;
-using WebPlanner.Models;
+using WebFood.Models;
 using WebFood.Models.ViewModels;
 using WebFood.Service.UserService;
 using WebFood.Utility;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebFood.Models.Entities;
 using WebFood.Service.CategoryService;
-using WebPlanner.Models;
+using WebFood.Models;
 
 namespace WebFood.Service.TypeOfRestaurantService
 {

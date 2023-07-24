@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using WebFood.Models.Entities;
-using WebPlanner.Models;
+using WebFood.Models;
 
 namespace WebFood.Service.RestaurantService
 {

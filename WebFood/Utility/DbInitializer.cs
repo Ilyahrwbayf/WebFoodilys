@@ -1,5 +1,5 @@
 ﻿using WebFood.Models.Entities;
-using WebPlanner.Models;
+using WebFood.Models;
 
 namespace WebFood.Utility
 {
