@@ -7,6 +7,7 @@ using WebFood.Service.TypeOfRestaurantService;
 using WebFood.Service.UserService;
 using WebFood.Utility;
 using WebFood.Models;
+using WebFood.Service.MealService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,7 @@ builder.Services.AddTransient<IDaoRestaurant, DaoRestaurant>();
 builder.Services.AddTransient<IDaoTypeOfRestaurant, DaoTypeOfRestaurant>();
 builder.Services.AddTransient<IDaoRestaurantType, DaoRestaurantType>();
 builder.Services.AddTransient<IDaoUser, DaoUser>();
+builder.Services.AddTransient<IDaoMeal, DaoMeal>();
 
 
 var app = builder.Build();

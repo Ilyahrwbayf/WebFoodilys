@@ -12,6 +12,7 @@ using WebFood.Service.RestaurantTypeService;
 using WebFood.Service.UserService;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using WebFood.Service.MealService;
 
 namespace WebFood.Controllers
 {
@@ -21,20 +22,23 @@ namespace WebFood.Controllers
         private readonly IDaoTypeOfRestaurant _daoTypeOfRestaurant;
         private readonly IDaoRestaurantType _daoRestaurantType;
         private readonly IDaoUser _daoUser;
+        private readonly IDaoMeal _daoMeal;
         public RestaurantController(IDaoRestaurant daoRestaurant,
                                     IDaoTypeOfRestaurant daoTypeOfRestaurant,
                                     IDaoRestaurantType daoRestaurantType,
-                                    IDaoUser daoUser)
+                                    IDaoUser daoUser,
+                                    IDaoMeal daoMeal)
         {
             _daoRestaurant= daoRestaurant;
             _daoTypeOfRestaurant = daoTypeOfRestaurant;
             _daoRestaurantType = daoRestaurantType;
             _daoUser= daoUser;
+            _daoMeal= daoMeal;
         }
         public IActionResult Restaurant(int restaurantId)
         {
            Restaurant restaurant = GetRestaurant(restaurantId);
-           List<Meal> meals = _daoRestaurant.GetMealsAsync(restaurantId).Result;
+           List<Meal> meals = _daoMeal.GetAllAsync(restaurantId).Result;
            ViewBag.Meals = meals;
            ViewData["Title"] = restaurant.Name;
            return View(restaurant);
@@ -147,6 +151,71 @@ namespace WebFood.Controllers
             }
             else
                 return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Delete(int restaurantId)
+        {
+            Restaurant restaurant = _daoRestaurant.GetAsync(restaurantId).Result;
+            _daoRestaurant.Delete(restaurant);
+            TempData["Message"] = $"Ресторан {restaurant.Name} удален";
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Administrator, Manager")]
+        public IActionResult AddMeal(int restaurantId)
+        {
+            Restaurant restaurant = GetRestaurant(restaurantId);
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
+                                    || User.IsInRole("Administrator"))
+            {
+                MealViewModel viewModel = new MealViewModel();
+                viewModel.RestaurantId = restaurantId;
+
+                return View(viewModel);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator, Manager")]
+        public IActionResult AddMeal(MealViewModel viewModel, [FromForm(Name = "Meal.ImageUrl")] IFormFile Imageurl)
+        {
+            Restaurant restaurant = GetRestaurant(viewModel.RestaurantId);
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
+                                    || User.IsInRole("Administrator"))
+            {
+                if (ModelState.IsValid)
+                {
+                    AddMealToDb(viewModel.Meal, viewModel.CategoryId, Imageurl);
+                }
+
+                return View(viewModel);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+
+
+        
+        /// ///////////// HELP METHODS
+        
+        private void AddMealToDb(Meal meal, int categoryId, IFormFile Imageurl)
+        {
+
+            meal.ImageUrl = GetImageUrl(Imageurl).Result.ToString();
+
+            _daoMeal.AddAsync(meal);
+
+            //_daoRestaurantType.AddAsync(new RestaurantType(restaurant.Id, categoryId));
+            ViewBag.Message = "Блюдо " + meal.Name + " добавлен";
         }
 
         private async Task<string> GetImageUrl(IFormFile Imageurl)

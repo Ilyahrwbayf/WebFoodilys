@@ -33,8 +33,12 @@
                        asp-route-restaurantId="@Model.Id">Редактировать информацию о ресторане</a>
                     <a asp-controller="Restaurant" asp-action="ChangeImage"
                         asp-route-restaurantId="@Model.Id">Изменить обложку</a>
-@*                    <a asp-controller="Restaurant" asp-action="AddMeal"
-                    asp-route-restaurantId="@Model.Id">Добавить блюдо</a>*@
+                    <hr />
+                    <a asp-controller="Restaurant" asp-action="AddMeal"
+                    asp-route-restaurantId="@Model.Id">Добавить блюдо</a>
+                    <hr />
+                    <a asp-controller="Restaurant" asp-action="AddCategoryOfMeal"
+                       asp-route-restaurantId="@Model.Id">Добавить категорию</a>
                 }
             </div>
             @*Meals*@

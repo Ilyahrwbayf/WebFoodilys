@@ -6,7 +6,7 @@ password encryption - done
 db initilizer - done
 products - done
 update category fix - done
-add category/ restaurant name check
-icontains
-pagination
+icontains - done
+delete restaurant - done
+meal service
 basket
