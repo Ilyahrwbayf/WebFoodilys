@@ -16,19 +16,15 @@ namespace WebFood.Controllers
     {
         private readonly IDaoRestaurant _daoRestaurant;
         private readonly IDaoTypeOfRestaurant _daoTypeOfRestaurant;
-        private readonly IDaoRestaurantType _daoRestaurantType;
-        private readonly IDaoUser _daoUser;
 
-        public HomeController(IDaoRestaurant daoRestaurant,
-                              IDaoTypeOfRestaurant daoTypeOfRestaurant,
-                              IDaoRestaurantType daoRestaurantType,
-                              IDaoUser daoUser)
+
+        public HomeController(IDaoRestaurant daoRestaurant,IDaoTypeOfRestaurant daoTypeOfRestaurant
+)
         {
             _daoRestaurant = daoRestaurant;
             _daoTypeOfRestaurant = daoTypeOfRestaurant;
-            _daoRestaurantType = daoRestaurantType;
-            _daoUser = daoUser;
         }
+
         [HttpGet]
         public IActionResult Index(HomeViewModel model)
         {
@@ -66,75 +62,6 @@ namespace WebFood.Controllers
         {
             return View();
         }
-
-        [HttpGet]
-        [Authorize(Roles = "Administrator")]
-        public IActionResult AddRestaurant(AddRestaurantVM restaurantVM)
-        {
-            GetTypesOfRestaurants();
-            return View(restaurantVM);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Administrator")]
-        public IActionResult AddRestaurant(AddRestaurantVM restaurantVM, [FromForm(Name = "Restaurant.Imageurl")]IFormFile Imageurl)
-        {
-            var restaurant = restaurantVM.Restaurant;
-            var categoryId = restaurantVM.CategoryId;
-            GetTypesOfRestaurants();
-
-            if (restaurant.ManagerId == 0) restaurant.ManagerId = null;
-
-            if (ModelState.IsValid)
-            {
-                if (restaurant.ManagerId != null)
-                {
-                    if (_daoUser.GetAsync(Convert.ToInt32(restaurant.ManagerId)).Result != null)
-                    {
-                        AddRestaurantToDb(restaurant, categoryId, Imageurl);
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("Restaurant.ManagerId", "Пользователь с таким id не найден");
-                    }
-                }
-                else
-                {
-                    AddRestaurantToDb(restaurant, categoryId, Imageurl);
-                }
-            }
-            return View(restaurantVM);
-        }
-
-        private void GetTypesOfRestaurants()
-        {
-            var categories = _daoTypeOfRestaurant.GetAllAsync().Result;
-            ViewBag.RestaurantCategories = new SelectList(categories, "Id", "Name");
-        }
-
-        private void AddRestaurantToDb(Restaurant restaurant, int categoryId, IFormFile Imageurl)
-        {
-
-            restaurant.Imageurl = GetImageUrl(Imageurl).Result.ToString();
-
-            _daoRestaurant.AddAsync(restaurant);
-
-            _daoRestaurantType.AddAsync(new RestaurantType(restaurant.Id, categoryId));
-            ViewBag.Message = "Ресторан " + restaurant.Name + " добавлен";
-        }
-
-        private async Task<string> GetImageUrl(IFormFile Imageurl)
-        {
-            string url = "";
-            try
-            {
-                url = await FileUploadHelper.Upload(Imageurl);
-
-            }
-            catch (Exception) { }
-            return url;
-        }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

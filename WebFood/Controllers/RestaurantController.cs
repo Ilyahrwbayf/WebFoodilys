@@ -45,6 +45,45 @@ namespace WebFood.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult AddRestaurant(AddRestaurantVM restaurantVM)
+        {
+            GetTypesOfRestaurants();
+            return View(restaurantVM);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult AddRestaurant(AddRestaurantVM restaurantVM, [FromForm(Name = "Restaurant.Imageurl")] IFormFile Imageurl)
+        {
+            var restaurant = restaurantVM.Restaurant;
+            var categoryId = restaurantVM.CategoryId;
+            GetTypesOfRestaurants();
+
+            if (restaurant.ManagerId == 0) restaurant.ManagerId = null;
+
+            if (ModelState.IsValid)
+            {
+                if (restaurant.ManagerId != null)
+                {
+                    if (_daoUser.GetAsync(Convert.ToInt32(restaurant.ManagerId)).Result != null)
+                    {
+                        AddRestaurantToDb(restaurant, categoryId, Imageurl);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Restaurant.ManagerId", "Пользователь с таким id не найден");
+                    }
+                }
+                else
+                {
+                    AddRestaurantToDb(restaurant, categoryId, Imageurl);
+                }
+            }
+            return View(restaurantVM);
+        }
+
+        [HttpGet]
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult Edit(int restaurantId)
         {
@@ -204,9 +243,27 @@ namespace WebFood.Controllers
 
 
 
-        
+
         /// ///////////// HELP METHODS
-        
+
+        private void GetTypesOfRestaurants()
+        {
+            var categories = _daoTypeOfRestaurant.GetAllAsync().Result;
+            ViewBag.RestaurantCategories = new SelectList(categories, "Id", "Name");
+        }
+
+        private void AddRestaurantToDb(Restaurant restaurant, int categoryId, IFormFile Imageurl)
+        {
+
+            restaurant.Imageurl = GetImageUrl(Imageurl).Result.ToString();
+
+            _daoRestaurant.AddAsync(restaurant);
+
+            _daoRestaurantType.AddAsync(new RestaurantType(restaurant.Id, categoryId));
+            ViewBag.Message = "Ресторан " + restaurant.Name + " добавлен";
+        }
+
+
         private void AddMealToDb(Meal meal, int categoryId, IFormFile Imageurl)
         {
 
