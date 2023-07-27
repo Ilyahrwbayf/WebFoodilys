@@ -27,14 +27,15 @@ namespace WebFood.Service.MealService
             return await _db.Meals.Where(m => m.RestaurantId == restaurantId).ToListAsync();
         }
 
-        public Task<Meal> GetAsync(int id)
+        public async Task<Meal> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _db.Meals.FindAsync(id);
         }
 
         public void Update(Meal meal)
         {
-            throw new NotImplementedException();
+            _db.Meals.Update(meal);
+            _db.SaveChanges();
         }
     }
 }

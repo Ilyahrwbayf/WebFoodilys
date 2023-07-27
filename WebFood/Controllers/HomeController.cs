@@ -18,8 +18,7 @@ namespace WebFood.Controllers
         private readonly IDaoTypeOfRestaurant _daoTypeOfRestaurant;
 
 
-        public HomeController(IDaoRestaurant daoRestaurant,IDaoTypeOfRestaurant daoTypeOfRestaurant
-)
+        public HomeController(IDaoRestaurant daoRestaurant,IDaoTypeOfRestaurant daoTypeOfRestaurant)
         {
             _daoRestaurant = daoRestaurant;
             _daoTypeOfRestaurant = daoTypeOfRestaurant;

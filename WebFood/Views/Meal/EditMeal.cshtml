@@ -1,7 +1,7 @@
 ﻿@using WebFood.Models.ViewModels
 @model MealViewModel
 @{
-    ViewData["Title"] = "Добавить блюдо";
+    ViewData["Title"] = "Изменить блюдо";
 }
 
 <h1 class="text-center">@ViewData["Title"]</h1>
@@ -10,7 +10,7 @@
     <div class="d-flex justify-content-center">
         <div class="col-10 col-sm-6 col-md-6 col-lg-4">
 
-            <form asp-controller="Meal" asp-action="AddMeal" method="post" enctype="multipart/form-data">
+            <form asp-controller="Meal" asp-action="EditMeal" method="post" enctype="multipart/form-data">
 
                 <div class="d-flex flex-column">
                     <label asp-for="Meal.Name">Имя*</label>
@@ -33,16 +33,13 @@
                     <input class="form-control" asp-for="Meal.Price" />
                     <span asp-validation-for="Meal.Price" class="text-danger mt-2"></span>
 
-
-                    <label asp-for="Meal.ImageUrl" class="mt-3">Изображение*</label>
-                    <input class="form-control" asp-for="Meal.ImageUrl" type="file" data-val-required="Загрузите изображение">
-                    <span asp-validation-for="Meal.ImageUrl" class="text-danger mt-2"></span>
-
                     <input class="form-control" asp-for="@Model.Meal.RestaurantId" type="hidden" value="@Model.Meal.RestaurantId">
                     <input class="form-control" asp-for="Meal.CreatedDate" type="hidden" value="@Model.Meal.CreatedDate">
 
                     <label asp-for="CategoryId" class="mt-3">Категория</label>
                     <select class="mt-2 form-select" asp-for="CategoryId" asp-items="Model.Categories"></select>
+
+                    <input class="form-control" asp-for="Meal.ImageUrl" type="hidden" value="@Model.Meal.ImageUrl">
 
                     <button class="mt-3 btn btn-primary">Подтвердить</button>
                     <a class="mt-3" asp-controller="Restaurant" asp-action="Restaurant" asp-route-restaurantId="@Model.Meal.RestaurantId">Назад</a>

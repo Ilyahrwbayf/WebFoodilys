@@ -1,9 +1,16 @@
-﻿using WebFood.Models.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using WebFood.Models;
+using WebFood.Models.Entities;
 
 namespace WebFood.Service.CategoryOfMealService
 {
     public class DaoCategoryOfMeal : IDaoCategoryOfMeal
     {
+        private readonly AppDbContext _db;
+        public DaoCategoryOfMeal(AppDbContext db)
+        {
+            _db = db;
+        }
         public void AddAsync(CategoryOfMeal categoryOfMeal)
         {
             throw new NotImplementedException();
@@ -14,9 +21,9 @@ namespace WebFood.Service.CategoryOfMealService
             throw new NotImplementedException();
         }
 
-        public Task<List<CategoryOfMeal>> GetAllAsync(int restaurantId)
+        public async Task<List<CategoryOfMeal>> GetAllAsync(int restaurantId)
         {
-            throw new NotImplementedException();
+            return  await _db.CategoriesOfMeals.Where(c=>c.RestaurantId==restaurantId).ToListAsync();
         }
 
         public Task<CategoryOfMeal> GetAsync(int id)

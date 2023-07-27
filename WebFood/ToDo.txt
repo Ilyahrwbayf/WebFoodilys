@@ -9,7 +9,7 @@ update category fix - done
 icontains - done
 delete restaurant - done
 typeOfRestaurant controller - done
-meal controller
+meal controller - done
 meal service
 category of meal controller
 castegory of meal service

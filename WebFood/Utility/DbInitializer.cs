@@ -52,7 +52,7 @@ namespace WebFood.Utility
 
             if (!db.Restaurants.Any())
             {
-                db.Restaurants.Add(new Restaurant() { Id = 1, Name = "KFS", Imageurl = "/uploads/restaurant.jpg", ManagerId = 1 });
+                db.Restaurants.Add(new Restaurant() { Id = 1, Name = "KFS", Imageurl = "/uploads/restaurant.jpg", ManagerId = 2 });
                 db.Restaurants.Add(new Restaurant() { Id = 2, Name = "Burger Queen", Imageurl = "/uploads/restaurant.jpg" });
                 db.Restaurants.Add(new Restaurant() { Id = 3, Name = "Highway", Imageurl = "/uploads/restaurant.jpg"});
                 db.Restaurants.Add(new Restaurant() { Id = 4, Name = "Tomato", Imageurl = "/uploads/restaurant.jpg" });

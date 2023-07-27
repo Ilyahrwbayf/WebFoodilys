@@ -55,14 +55,28 @@
                             {
                                 <div>@meal.Description</div>
                             }
-                            <div class="d-flex justify-content-between">
-                                <span>@meal.Weight г</span>
-                                <span>@meal.Calories ккал</span>
-                            </div>
+                            @if (meal.Weight != 0 || meal.Calories != 0)
+                            {
+                                <div class="d-flex justify-content-between">
+                                    @if (meal.Weight != 0)
+                                    {
+                                        <span>@meal.Weight г</span>
+                                    }
+                                    @if (meal.Calories != 0)
+                                    {
+                                    <span>@meal.Calories ккал</span>
+                                    }
+                                </div>}
                             <h5>
                                 @meal.Price &#8381;
                             </h5>
                             <button class="btn btn-primary">Добавить</button>
+                            @if (this.User.IsInRole("Administrator") ||
+                                (this.User.IsInRole("Manager")
+                                && this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.ManagerId.ToString()))
+                            {
+                                <a asp-controller="Meal" asp-action="EditMeal" asp-route-mealId="@meal.Id">Изменить</a>
+                            }
                         </div>
                     </div>
                 }
