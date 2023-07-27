@@ -34,10 +34,10 @@
                     <a asp-controller="Restaurant" asp-action="ChangeImage"
                         asp-route-restaurantId="@Model.Id">Изменить обложку</a>
                     <hr />
-                    <a asp-controller="Restaurant" asp-action="AddMeal"
+                    <a asp-controller="Meal" asp-action="AddMeal"
                     asp-route-restaurantId="@Model.Id">Добавить блюдо</a>
                     <hr />
-                    <a asp-controller="Restaurant" asp-action="AddCategoryOfMeal"
+                    <a asp-controller="CategoryOfMeal" asp-action="AddCategoryOfMeal"
                        asp-route-restaurantId="@Model.Id">Добавить категорию</a>
                 }
             </div>
