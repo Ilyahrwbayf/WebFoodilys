@@ -8,5 +8,9 @@ products - done
 update category fix - done
 icontains - done
 delete restaurant - done
+typeOfRestaurant controller - done
+meal controller
 meal service
+category of meal controller
+castegory of meal service
 basket
