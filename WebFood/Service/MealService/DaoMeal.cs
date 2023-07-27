@@ -19,7 +19,8 @@ namespace WebFood.Service.MealService
 
         public void Delete(Meal meal)
         {
-            throw new NotImplementedException();
+            _db.Meals.Remove(meal);
+            _db.SaveChanges();
         }
 
         public async Task<List<Meal>> GetAllAsync(int restaurantId)

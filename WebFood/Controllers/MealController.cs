@@ -111,6 +111,14 @@ namespace WebFood.Controllers
             }
         }
 
+        public IActionResult Delete(int mealId, int restaurantId)
+        {
+            Meal meal = _daoMeal.GetAsync(mealId).Result;
+            _daoMeal.Delete(meal);
+            TempData["Message"] = $"Блюдо {meal.Name} удалено";
+            return RedirectToAction("Restaurant", "Restaurant", new {restaurantId = restaurantId});
+        }
+
         //  HELP METHODS
 
         private void AddMealToDb(Meal meal, int categoryId, IFormFile Imageurl)
