@@ -14,8 +14,9 @@ meal service - done
 delete meal deletes image - done
 change meal image - done
 edit meal bug - fixed
-category of meal controller
-castegory of meal service
+category of meal controller - done
+castegory of meal service - done
+categories in menu - done
 link meal and category
-categories in menu
+link menu and main in view
 basket

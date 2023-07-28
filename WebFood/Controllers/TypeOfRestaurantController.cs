@@ -39,7 +39,7 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator")]
         public IActionResult EditTypeOfRestaurant()
         {
-            GetTypesOfRestaurants();
+            ViewBag.RestaurantCategories = GetTypesOfRestaurants();
             return View();
         }
 
@@ -52,7 +52,7 @@ namespace WebFood.Controllers
                 _daoTypeOfRestaurant.Update(typeOfRestaurant);
                 ViewBag.Message = "Категория изменена на" + typeOfRestaurant.Name;
             }
-            GetTypesOfRestaurants();
+            ViewBag.RestaurantCategories = GetTypesOfRestaurants();
             return View(typeOfRestaurant);
         }
 
@@ -60,7 +60,7 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator")]
         public IActionResult DeleteTypeOfRestaurant()
         {
-            GetTypesOfRestaurants();
+            ViewBag.RestaurantCategories = GetTypesOfRestaurants();
             return View();
         }
 
@@ -73,14 +73,14 @@ namespace WebFood.Controllers
                 _daoTypeOfRestaurant.Delete(typeOfRestaurant.Id);
                 ViewBag.Message = "Категория " + typeOfRestaurant.Name + " удалена";
             }
-            GetTypesOfRestaurants();
+            ViewBag.RestaurantCategories = GetTypesOfRestaurants();
             return View(typeOfRestaurant);
         }
 
-        private void GetTypesOfRestaurants()
+        private SelectList GetTypesOfRestaurants()
         {
             var categories = _daoTypeOfRestaurant.GetAllAsync().Result;
-            ViewBag.RestaurantCategories = new SelectList(categories, "Id", "Name");
+            return new SelectList(categories, "Id", "Name");
         }
     }
 }

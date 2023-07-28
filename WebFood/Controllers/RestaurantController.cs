@@ -13,6 +13,7 @@ using WebFood.Service.UserService;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using WebFood.Service.MealService;
+using WebFood.Service.CategoryOfMealService;
 
 namespace WebFood.Controllers
 {
@@ -23,23 +24,33 @@ namespace WebFood.Controllers
         private readonly IDaoRestaurantType _daoRestaurantType;
         private readonly IDaoUser _daoUser;
         private readonly IDaoMeal _daoMeal;
+        private readonly IDaoCategoryOfMeal _daoCategoryOfMeal;
+
         public RestaurantController(IDaoRestaurant daoRestaurant,
                                     IDaoTypeOfRestaurant daoTypeOfRestaurant,
                                     IDaoRestaurantType daoRestaurantType,
                                     IDaoUser daoUser,
-                                    IDaoMeal daoMeal)
+                                    IDaoMeal daoMeal,
+                                    IDaoCategoryOfMeal daoCategoryOfMeal
+                                    )
         {
             _daoRestaurant= daoRestaurant;
             _daoTypeOfRestaurant = daoTypeOfRestaurant;
             _daoRestaurantType = daoRestaurantType;
             _daoUser= daoUser;
             _daoMeal= daoMeal;
+            _daoCategoryOfMeal = daoCategoryOfMeal;
         }
         public IActionResult Restaurant(int restaurantId)
         {
            Restaurant restaurant = GetRestaurant(restaurantId);
+
            List<Meal> meals = _daoMeal.GetAllAsync(restaurantId).Result;
            ViewBag.Meals = meals;
+
+            List<CategoryOfMeal> menu = _daoCategoryOfMeal.GetAllAsync(restaurantId).Result;
+            ViewBag.Menu = menu;
+
            ViewData["Title"] = restaurant.Name;
            return View(restaurant);
         }
@@ -69,6 +80,7 @@ namespace WebFood.Controllers
                     if (_daoUser.GetAsync(Convert.ToInt32(restaurant.ManagerId)).Result != null)
                     {
                         AddRestaurantToDb(restaurant, categoryId, Imageurl);
+                        ViewBag.Message = "Ресторан " + restaurant.Name + " добавлен";
                     }
                     else
                     {
@@ -78,6 +90,7 @@ namespace WebFood.Controllers
                 else
                 {
                     AddRestaurantToDb(restaurant, categoryId, Imageurl);
+                    ViewBag.Message = "Ресторан " + restaurant.Name + " добавлен";
                 }
             }
             return View(restaurantVM);
@@ -88,8 +101,7 @@ namespace WebFood.Controllers
         public IActionResult Edit(int restaurantId)
         {
             var restaurant = GetRestaurant(restaurantId);
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                || User.IsInRole("Administrator"))
+            if (IsAdminOrManager(restaurant))
             {
                 AddRestaurantVM restaurantVM = new AddRestaurantVM();
                 restaurantVM.Restaurant = restaurant;
@@ -111,8 +123,7 @@ namespace WebFood.Controllers
         {
             var restaurant = restaurantVM.Restaurant;
 
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-               || User.IsInRole("Administrator"))
+            if (IsAdminOrManager(restaurant))
             {
                 if (restaurant.ManagerId == 0) restaurant.ManagerId = null;
 
@@ -151,8 +162,7 @@ namespace WebFood.Controllers
         public IActionResult ChangeImage(int restaurantId)
         {
             var restaurant = GetRestaurant(restaurantId);
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                                    || User.IsInRole("Administrator"))
+            if (IsAdminOrManager(restaurant))
             {
                 return View(restaurant);
             }
@@ -166,8 +176,7 @@ namespace WebFood.Controllers
         {
             restaurant = GetRestaurant(restaurant.Id);
 
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                                    || User.IsInRole("Administrator"))
+            if (IsAdminOrManager(restaurant))
             {
                 if (ModelState.IsValid)
                 {
@@ -201,10 +210,15 @@ namespace WebFood.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        
 
-                                        // HELP METHODS
 
+                                            // HELP METHODS
+
+        private bool IsAdminOrManager(Restaurant restaurant)
+        {
+            return (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
+                        || User.IsInRole("Administrator"));
+        }
         private void GetTypesOfRestaurants()
         {
             var categories = _daoTypeOfRestaurant.GetAllAsync().Result;
@@ -219,7 +233,7 @@ namespace WebFood.Controllers
             _daoRestaurant.AddAsync(restaurant);
 
             _daoRestaurantType.AddAsync(new RestaurantType(restaurant.Id, categoryId));
-            ViewBag.Message = "Ресторан " + restaurant.Name + " добавлен";
+            
         }
 
         private async Task<string> GetImageUrl(IFormFile Imageurl)

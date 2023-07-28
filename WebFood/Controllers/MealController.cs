@@ -30,8 +30,7 @@ namespace WebFood.Controllers
         public IActionResult AddMeal(int restaurantId)
         {
             Restaurant restaurant = GetRestaurant(restaurantId);
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                                    || User.IsInRole("Administrator"))
+            if (IsAdminOrManager(restaurant))
             {
                 MealViewModel viewModel = new MealViewModel();
                 viewModel.Meal.RestaurantId = restaurantId;
@@ -50,12 +49,12 @@ namespace WebFood.Controllers
         public IActionResult AddMeal(MealViewModel viewModel, [FromForm(Name = "Meal.ImageUrl")] IFormFile Imageurl)
         {
             Restaurant restaurant = GetRestaurant(viewModel.Meal.RestaurantId);
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                                    || User.IsInRole("Administrator"))
+            if (IsAdminOrManager(restaurant))
             {
                 if (ModelState.IsValid)
                 {
                     AddMealToDb(viewModel.Meal, viewModel.CategoryId, Imageurl);
+                    ViewBag.Message = "Блюдо " + viewModel.Meal.Name + " добавлено";
                 }
 
                 viewModel.Categories = GetCategoriesOfMeal(viewModel.Meal.RestaurantId);
@@ -73,8 +72,7 @@ namespace WebFood.Controllers
         {
             Meal meal = GetMeal(mealId);
             Restaurant restaurant = GetRestaurant(meal.RestaurantId);
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                                    || User.IsInRole("Administrator"))
+            if (IsAdminOrManager(restaurant))
             {
                 MealViewModel viewModel = new MealViewModel();
                 viewModel.Meal = meal;
@@ -93,8 +91,7 @@ namespace WebFood.Controllers
         public IActionResult EditMeal(MealViewModel viewModel)
         {
             Restaurant restaurant = GetRestaurant(viewModel.Meal.RestaurantId);
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                                    || User.IsInRole("Administrator"))
+            if (IsAdminOrManager(restaurant))
             {
                 if (ModelState.IsValid)
                 {
@@ -118,8 +115,7 @@ namespace WebFood.Controllers
             Meal meal = GetMeal(mealId);
             Restaurant restaurant = GetRestaurant(meal.RestaurantId);
 
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                                    || User.IsInRole("Administrator"))
+            if (IsAdminOrManager(restaurant))
             {
                 return View(meal);
             }
@@ -134,8 +130,7 @@ namespace WebFood.Controllers
             meal = GetMeal(meal.Id);
             Restaurant restaurant = GetRestaurant(meal.RestaurantId);
 
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                                    || User.IsInRole("Administrator"))
+            if (IsAdminOrManager(restaurant))
             {
                 if (ModelState.IsValid)
                 {
@@ -171,14 +166,16 @@ namespace WebFood.Controllers
 
         //  HELP METHODS
 
+        private bool IsAdminOrManager(Restaurant restaurant)
+        {
+            return (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
+                        || User.IsInRole("Administrator"));
+        }
+
         private void AddMealToDb(Meal meal, int categoryId, IFormFile Imageurl)
         {
-
             meal.ImageUrl = GetImageUrl(Imageurl).Result.ToString();
-
             _daoMeal.AddAsync(meal);
-
-            ViewBag.Message = "Блюдо " + meal.Name + " добавлен";
         }
 
         private async Task<string> GetImageUrl(IFormFile Imageurl)

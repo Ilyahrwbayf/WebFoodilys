@@ -11,14 +11,16 @@ namespace WebFood.Service.CategoryOfMealService
         {
             _db = db;
         }
-        public void AddAsync(CategoryOfMeal categoryOfMeal)
+        public async void AddAsync(CategoryOfMeal categoryOfMeal)
         {
-            throw new NotImplementedException();
+            await _db.CategoriesOfMeals.AddAsync(categoryOfMeal);
+            _db.SaveChanges();
         }
 
         public void Delete(CategoryOfMeal categoryOfMeal)
         {
-            throw new NotImplementedException();
+            _db.CategoriesOfMeals.Remove(categoryOfMeal);
+            _db.SaveChanges();
         }
 
         public async Task<List<CategoryOfMeal>> GetAllAsync(int restaurantId)
@@ -33,7 +35,8 @@ namespace WebFood.Service.CategoryOfMealService
 
         public void Update(CategoryOfMeal categoryOfMeal)
         {
-            throw new NotImplementedException();
+            _db.CategoriesOfMeals.Update(categoryOfMeal);
+            _db.SaveChanges();
         }
     }
 }
