@@ -7,12 +7,9 @@ namespace WebFood.Models.ViewModels
     {
         public Meal Meal { get; set; }
         public SelectList? Categories { get; set; }
-        public int CategoryId { get; set; }
-
         public MealViewModel()
         {
             Meal = new Meal();
-            CategoryId = 0;
         }
 
     }

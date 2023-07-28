@@ -53,7 +53,7 @@ namespace WebFood.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    AddMealToDb(viewModel.Meal, viewModel.CategoryId, Imageurl);
+                    AddMealToDb(viewModel.Meal, viewModel.Meal.CategoryId, Imageurl);
                     ViewBag.Message = "Блюдо " + viewModel.Meal.Name + " добавлено";
                 }
 

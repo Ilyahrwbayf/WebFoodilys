@@ -17,6 +17,6 @@ edit meal bug - fixed
 category of meal controller - done
 castegory of meal service - done
 categories in menu - done
-link meal and category
-link menu and main in view
+link menu and main in Restaurant view - done
+edit dbInitializer
 basket
