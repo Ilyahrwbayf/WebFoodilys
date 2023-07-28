@@ -10,7 +10,12 @@ icontains - done
 delete restaurant - done
 typeOfRestaurant controller - done
 meal controller - done
-meal service
+meal service - done
+delete meal deletes image - done
+change meal image - done
+edit meal bug - fixed
 category of meal controller
 castegory of meal service
+link meal and category
+categories in menu
 basket

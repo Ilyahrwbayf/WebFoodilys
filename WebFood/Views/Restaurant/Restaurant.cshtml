@@ -75,7 +75,10 @@
                                 (this.User.IsInRole("Manager")
                                 && this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.ManagerId.ToString()))
                             {
-                                <a asp-controller="Meal" asp-action="EditMeal" asp-route-mealId="@meal.Id">Изменить</a>
+                                <div class="d-flex flex-column">
+                                    <a class="mt-2" asp-controller="Meal" asp-action="EditMeal" asp-route-mealId="@meal.Id">Изменить</a>
+                                    <a class="mt-2" asp-controller="Meal" asp-action="ChangeMealImg" asp-route-mealId="@meal.Id">Изменить изображение</a>
+                                </div>
                             }
                         </div>
                     </div>

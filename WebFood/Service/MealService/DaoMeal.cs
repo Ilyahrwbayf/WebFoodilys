@@ -19,6 +19,14 @@ namespace WebFood.Service.MealService
 
         public void Delete(Meal meal)
         {
+            string filePath = "wwwroot/" + meal.ImageUrl;
+
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
             _db.Meals.Remove(meal);
             _db.SaveChanges();
         }

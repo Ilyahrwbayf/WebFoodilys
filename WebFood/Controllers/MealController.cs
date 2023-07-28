@@ -71,7 +71,7 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult EditMeal(int mealId)
         {
-            Meal meal = _daoMeal.GetAsync(mealId).Result;
+            Meal meal = GetMeal(mealId);
             Restaurant restaurant = GetRestaurant(meal.RestaurantId);
             if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
                                     || User.IsInRole("Administrator"))
@@ -111,6 +111,56 @@ namespace WebFood.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Administrator, Manager")]
+        public IActionResult ChangeMealImg(int mealId)
+        {
+            Meal meal = GetMeal(mealId);
+            Restaurant restaurant = GetRestaurant(meal.RestaurantId);
+
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
+                                    || User.IsInRole("Administrator"))
+            {
+                return View(meal);
+            }
+            else
+                return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator, Manager")]
+        public IActionResult ChangeMealImg(Meal meal, [FromForm(Name = "ImageUrl")] IFormFile ImageUrl)
+        {
+            meal = GetMeal(meal.Id);
+            Restaurant restaurant = GetRestaurant(meal.RestaurantId);
+
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
+                                    || User.IsInRole("Administrator"))
+            {
+                if (ModelState.IsValid)
+                {
+
+                    string filePath = "wwwroot/" + meal.ImageUrl;
+
+
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+
+                    meal.ImageUrl = GetImageUrl(ImageUrl).Result.ToString();
+
+                    _daoMeal.Update(meal);
+
+                    ViewBag.Message = "Изображение изменено";
+                }
+                return View(meal);
+            }
+            else
+                return RedirectToAction("Index", "Home");
+        }
+
+
         public IActionResult Delete(int mealId, int restaurantId)
         {
             Meal meal = _daoMeal.GetAsync(mealId).Result;
@@ -146,6 +196,11 @@ namespace WebFood.Controllers
         private Restaurant GetRestaurant(int restaurantId)
         {
             return _daoRestaurant.GetAsync(restaurantId).Result;
+        }
+
+        private Meal GetMeal(int mealId)
+        {
+            return _daoMeal.GetAsync(mealId).Result;
         }
 
         private SelectList GetCategoriesOfMeal(int restaurantId)
