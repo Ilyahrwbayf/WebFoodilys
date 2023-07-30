@@ -31,8 +31,7 @@ namespace WebFood.Controllers
                                     IDaoRestaurantType daoRestaurantType,
                                     IDaoUser daoUser,
                                     IDaoMeal daoMeal,
-                                    IDaoCategoryOfMeal daoCategoryOfMeal
-                                    )
+                                    IDaoCategoryOfMeal daoCategoryOfMeal)
         {
             _daoRestaurant= daoRestaurant;
             _daoTypeOfRestaurant = daoTypeOfRestaurant;
@@ -43,7 +42,7 @@ namespace WebFood.Controllers
         }
         public IActionResult Restaurant(int restaurantId)
         {
-           Restaurant restaurant = GetRestaurant(restaurantId);
+           Restaurant restaurant = _daoRestaurant.GetAsync(restaurantId).Result;
 
            List<Meal> meals = _daoMeal.GetAllAsync(restaurantId).Result;
            ViewBag.Meals = meals;
@@ -59,7 +58,7 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator")]
         public IActionResult AddRestaurant(AddRestaurantVM restaurantVM)
         {
-            GetTypesOfRestaurants();
+            ViewBag.RestaurantCategories = GetTypesOfRestaurants();
             return View(restaurantVM);
         }
 
@@ -69,7 +68,7 @@ namespace WebFood.Controllers
         {
             var restaurant = restaurantVM.Restaurant;
             var categoryId = restaurantVM.CategoryId;
-            GetTypesOfRestaurants();
+            ViewBag.RestaurantCategories = GetTypesOfRestaurants();
 
             if (restaurant.ManagerId == 0) restaurant.ManagerId = null;
 
@@ -100,13 +99,13 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult Edit(int restaurantId)
         {
-            var restaurant = GetRestaurant(restaurantId);
-            if (IsAdminOrManager(restaurant))
+            var restaurant = _daoRestaurant.GetAsync(restaurantId).Result;
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 AddRestaurantVM restaurantVM = new AddRestaurantVM();
                 restaurantVM.Restaurant = restaurant;
-                restaurantVM.CategoryId = GetRestaurantType(restaurantId);
-                GetTypesOfRestaurant();
+                restaurantVM.CategoryId = _daoRestaurantType.GetAsync(restaurantId).Result.TypeId;
+                ViewBag.RestaurantCategories = GetTypesOfRestaurants();
                 return View(restaurantVM);
             }
             else
@@ -123,7 +122,7 @@ namespace WebFood.Controllers
         {
             var restaurant = restaurantVM.Restaurant;
 
-            if (IsAdminOrManager(restaurant))
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 if (restaurant.ManagerId == 0) restaurant.ManagerId = null;
 
@@ -148,7 +147,7 @@ namespace WebFood.Controllers
                         ViewBag.Message = "Информация изменена";
                     }
                 }
-                GetTypesOfRestaurant();
+                ViewBag.RestaurantCategories = GetTypesOfRestaurants();
                 return View(restaurantVM);
 
             }
@@ -161,8 +160,8 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult ChangeImage(int restaurantId)
         {
-            var restaurant = GetRestaurant(restaurantId);
-            if (IsAdminOrManager(restaurant))
+            var restaurant = _daoRestaurant.GetAsync(restaurantId).Result;
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 return View(restaurant);
             }
@@ -174,9 +173,9 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult ChangeImage(Restaurant restaurant, [FromForm(Name = "Imageurl")] IFormFile Imageurl)
         {
-            restaurant = GetRestaurant(restaurant.Id);
+            restaurant = _daoRestaurant.GetAsync(restaurant.Id).Result;
 
-            if (IsAdminOrManager(restaurant))
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 if (ModelState.IsValid)
                 {
@@ -189,7 +188,7 @@ namespace WebFood.Controllers
                         System.IO.File.Delete(filePath);
                     }
 
-                    restaurant.Imageurl = GetImageUrl(Imageurl).Result.ToString();
+                    restaurant.Imageurl = FileHelper.GetImageUrl(Imageurl).Result.ToString();
 
                     _daoRestaurant.Update(restaurant);
 
@@ -214,21 +213,17 @@ namespace WebFood.Controllers
 
                                             // HELP METHODS
 
-        private bool IsAdminOrManager(Restaurant restaurant)
-        {
-            return (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                        || User.IsInRole("Administrator"));
-        }
-        private void GetTypesOfRestaurants()
+
+        private SelectList GetTypesOfRestaurants()
         {
             var categories = _daoTypeOfRestaurant.GetAllAsync().Result;
-            ViewBag.RestaurantCategories = new SelectList(categories, "Id", "Name");
+            return new SelectList(categories, "Id", "Name");
         }
 
         private void AddRestaurantToDb(Restaurant restaurant, int categoryId, IFormFile Imageurl)
         {
 
-            restaurant.Imageurl = GetImageUrl(Imageurl).Result.ToString();
+            restaurant.Imageurl = FileHelper.GetImageUrl(Imageurl).Result.ToString();
 
             _daoRestaurant.AddAsync(restaurant);
 
@@ -236,29 +231,5 @@ namespace WebFood.Controllers
             
         }
 
-        private async Task<string> GetImageUrl(IFormFile Imageurl)
-        {
-            string url = "";
-            try
-            {
-                url = await FileUploadHelper.Upload(Imageurl);
-
-            }
-            catch (Exception) { }
-            return url;
-        }
-        private Restaurant GetRestaurant(int restaurantId)
-        {
-            return _daoRestaurant.GetAsync(restaurantId).Result;
-        }
-        private int GetRestaurantType(int restaurantId)
-        {
-            return _daoRestaurantType.GetAsync(restaurantId).Result.TypeId;
-        }
-        private void GetTypesOfRestaurant()
-        {
-            var categories = _daoTypeOfRestaurant.GetAllAsync().Result;
-            ViewBag.RestaurantCategories = new SelectList(categories, "Id", "Name");
-        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace WebFood.Utility
 {
-    static public class FileUploadHelper
+    static public class FileHelper
     {
         static public async Task<string> Upload(IFormFile file)
         {
@@ -13,6 +13,18 @@
             }
 
             throw new Exception("File was not uploaded!");
+        }
+
+        public static async Task<string> GetImageUrl(IFormFile Imageurl)
+        {
+            string url = "";
+            try
+            {
+                url = await FileHelper.Upload(Imageurl);
+
+            }
+            catch (Exception) { }
+            return url;
         }
 
     }

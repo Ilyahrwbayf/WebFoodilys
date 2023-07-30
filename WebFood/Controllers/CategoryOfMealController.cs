@@ -6,6 +6,7 @@ using System.Security.Claims;
 using WebFood.Models.Entities;
 using WebFood.Service.CategoryOfMealService;
 using WebFood.Service.RestaurantService;
+using WebFood.Utility;
 
 namespace WebFood.Controllers
 {
@@ -24,8 +25,8 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult AddCategoryOfMeal(int restaurantId)
         {
-            Restaurant restaurant = GetRestaurant(restaurantId);
-            if (IsAdminOrManager(restaurant))
+            Restaurant restaurant = _daoRestaurant.GetAsync(restaurantId).Result;
+            if (AcessChecker.IsAdminOrManager(restaurant,User))
             {
                 CategoryOfMeal category = new CategoryOfMeal() { RestaurantId = restaurantId }; 
                 return View(category);
@@ -40,8 +41,8 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult AddCategoryOfMeal(CategoryOfMeal category)
         {
-            Restaurant restaurant = GetRestaurant(category.RestaurantId);
-            if (IsAdminOrManager(restaurant))
+            Restaurant restaurant = _daoRestaurant.GetAsync(category.RestaurantId).Result;
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 if (ModelState.IsValid)
                 {
@@ -64,8 +65,8 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult EditCategoryOfMeal(int restaurantId)
         {
-            Restaurant restaurant = GetRestaurant(restaurantId);
-            if (IsAdminOrManager(restaurant))
+            Restaurant restaurant = _daoRestaurant.GetAsync(restaurantId).Result;
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 CategoryOfMeal category = new CategoryOfMeal() { RestaurantId = restaurantId };
                 ViewBag.Categories = GetCategoriesOfMeal(restaurantId);
@@ -81,8 +82,8 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult EditCategoryOfMeal(CategoryOfMeal category)
         {
-            Restaurant restaurant = GetRestaurant(category.RestaurantId);
-            if (IsAdminOrManager(restaurant))
+            Restaurant restaurant = _daoRestaurant.GetAsync(category.RestaurantId).Result;
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 if (ModelState.IsValid)
                 {
@@ -102,8 +103,8 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult DeleteCategoryOfMeal(int restaurantId)
         {
-            Restaurant restaurant = GetRestaurant(restaurantId);
-            if (IsAdminOrManager(restaurant))
+            Restaurant restaurant = _daoRestaurant.GetAsync(restaurantId).Result;
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 CategoryOfMeal category = new CategoryOfMeal() { RestaurantId = restaurantId };
                 ViewBag.Categories = GetCategoriesOfMeal(restaurantId);
@@ -119,8 +120,8 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult DeleteCategoryOfMeal(CategoryOfMeal category)
         {
-            Restaurant restaurant = GetRestaurant(category.RestaurantId);
-            if (IsAdminOrManager(restaurant))
+            Restaurant restaurant = _daoRestaurant.GetAsync(category.RestaurantId).Result;
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 if (ModelState.IsValid)
                 {
@@ -140,23 +141,11 @@ namespace WebFood.Controllers
 
         // HELP METHODS
 
-        private Restaurant GetRestaurant(int restaurantId)
-        {
-            return _daoRestaurant.GetAsync(restaurantId).Result;
-        }
-
-        private bool IsAdminOrManager(Restaurant restaurant)
-        {
-            return (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                        || User.IsInRole("Administrator"));
-        }
-
         private SelectList GetCategoriesOfMeal(int restaurantId)
         {
             List<CategoryOfMeal> categories = _daoCategoryOfMeal.GetAllAsync(restaurantId).Result;
             return new SelectList(categories, "Id", "Name");
         }
-
 
     }
 }

@@ -29,8 +29,8 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult AddMeal(int restaurantId)
         {
-            Restaurant restaurant = GetRestaurant(restaurantId);
-            if (IsAdminOrManager(restaurant))
+            Restaurant restaurant = _daoRestaurant.GetAsync(restaurantId).Result;
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 MealViewModel viewModel = new MealViewModel();
                 viewModel.Meal.RestaurantId = restaurantId;
@@ -48,8 +48,8 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult AddMeal(MealViewModel viewModel, [FromForm(Name = "Meal.ImageUrl")] IFormFile Imageurl)
         {
-            Restaurant restaurant = GetRestaurant(viewModel.Meal.RestaurantId);
-            if (IsAdminOrManager(restaurant))
+            Restaurant restaurant = _daoRestaurant.GetAsync(viewModel.Meal.RestaurantId).Result;
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 if (ModelState.IsValid)
                 {
@@ -70,9 +70,9 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult EditMeal(int mealId)
         {
-            Meal meal = GetMeal(mealId);
-            Restaurant restaurant = GetRestaurant(meal.RestaurantId);
-            if (IsAdminOrManager(restaurant))
+            Meal meal = _daoMeal.GetAsync(mealId).Result;
+            Restaurant restaurant = _daoRestaurant.GetAsync(meal.RestaurantId).Result;
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 MealViewModel viewModel = new MealViewModel();
                 viewModel.Meal = meal;
@@ -90,8 +90,8 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult EditMeal(MealViewModel viewModel)
         {
-            Restaurant restaurant = GetRestaurant(viewModel.Meal.RestaurantId);
-            if (IsAdminOrManager(restaurant))
+            Restaurant restaurant = _daoRestaurant.GetAsync(viewModel.Meal.RestaurantId).Result;
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 if (ModelState.IsValid)
                 {
@@ -112,10 +112,10 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult ChangeMealImg(int mealId)
         {
-            Meal meal = GetMeal(mealId);
-            Restaurant restaurant = GetRestaurant(meal.RestaurantId);
+            Meal meal = _daoMeal.GetAsync(mealId).Result;
+            Restaurant restaurant = _daoRestaurant.GetAsync(meal.RestaurantId).Result;
 
-            if (IsAdminOrManager(restaurant))
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 return View(meal);
             }
@@ -127,10 +127,10 @@ namespace WebFood.Controllers
         [Authorize(Roles = "Administrator, Manager")]
         public IActionResult ChangeMealImg(Meal meal, [FromForm(Name = "ImageUrl")] IFormFile ImageUrl)
         {
-            meal = GetMeal(meal.Id);
-            Restaurant restaurant = GetRestaurant(meal.RestaurantId);
+            meal = _daoMeal.GetAsync(meal.Id).Result;
+            Restaurant restaurant = _daoRestaurant.GetAsync(meal.RestaurantId).Result;
 
-            if (IsAdminOrManager(restaurant))
+            if (AcessChecker.IsAdminOrManager(restaurant, User))
             {
                 if (ModelState.IsValid)
                 {
@@ -143,7 +143,7 @@ namespace WebFood.Controllers
                         System.IO.File.Delete(filePath);
                     }
 
-                    meal.ImageUrl = GetImageUrl(ImageUrl).Result.ToString();
+                    meal.ImageUrl = FileHelper.GetImageUrl(ImageUrl).Result.ToString();
 
                     _daoMeal.Update(meal);
 
@@ -166,38 +166,10 @@ namespace WebFood.Controllers
 
         //  HELP METHODS
 
-        private bool IsAdminOrManager(Restaurant restaurant)
-        {
-            return (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                        || User.IsInRole("Administrator"));
-        }
-
         private void AddMealToDb(Meal meal, int categoryId, IFormFile Imageurl)
         {
-            meal.ImageUrl = GetImageUrl(Imageurl).Result.ToString();
+            meal.ImageUrl = FileHelper.GetImageUrl(Imageurl).Result.ToString();
             _daoMeal.AddAsync(meal);
-        }
-
-        private async Task<string> GetImageUrl(IFormFile Imageurl)
-        {
-            string url = "";
-            try
-            {
-                url = await FileUploadHelper.Upload(Imageurl);
-
-            }
-            catch (Exception) { }
-            return url;
-        }
-
-        private Restaurant GetRestaurant(int restaurantId)
-        {
-            return _daoRestaurant.GetAsync(restaurantId).Result;
-        }
-
-        private Meal GetMeal(int mealId)
-        {
-            return _daoMeal.GetAsync(mealId).Result;
         }
 
         private SelectList GetCategoriesOfMeal(int restaurantId)
