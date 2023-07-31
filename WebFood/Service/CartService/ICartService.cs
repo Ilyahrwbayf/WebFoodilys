@@ -7,7 +7,6 @@ namespace WebFood.Service.CartService
     public interface ICartService
     {
         public string ShoppingCartId { get; set; }
-        public ICartService GetCart(Controller controller);
         public void AddToCart(Meal meal);
         public int RemoveFromCart(int id);
         public void EmptyCart();

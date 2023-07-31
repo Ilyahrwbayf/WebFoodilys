@@ -19,12 +19,6 @@ namespace WebFood.Service.CartService
             ShoppingCartId = string.Empty;
         }
 
-        public ICartService GetCart(Controller controller)
-        {
-            throw new NotImplementedException();
-        }
-
-
         public void AddToCart(Meal meal)
         {
             // Get the matching cart and meal instances
