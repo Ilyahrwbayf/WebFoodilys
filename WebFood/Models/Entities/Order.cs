@@ -7,18 +7,19 @@
         public Profile? Profile { get; set; }
         public Restaurant? Restaurant { get; set; }
         public int RestaurantId { get; set; }
-        public double TotalPrice { get; set; }
-        public DateTime Date { get; set; }
+        public decimal TotalPrice { get; set; }
+        public DateTime OrderDate { get; set; }
         public string Status { get; set; }
+        public List<OrderDetail>? OrderDetails { get; set; }
         
 
-        public Order(int profileId, int restaurantId, double totalPrice,
-                     DateTime date, string status)
+        public Order(int profileId, int restaurantId, decimal totalPrice,
+                     DateTime orderDate, string status)
         {
             ProfileId = profileId;
             RestaurantId = restaurantId;
             TotalPrice = totalPrice;
-            Date = date;
+            OrderDate = orderDate;
             Status = status;
         }
     }

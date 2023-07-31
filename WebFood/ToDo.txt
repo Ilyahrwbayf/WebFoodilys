@@ -18,5 +18,5 @@ category of meal controller - done
 castegory of meal service - done
 categories in menu - done
 link menu and main in Restaurant view - done
-edit dbInitializer
+edit dbInitializer - done
 basket

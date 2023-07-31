@@ -20,6 +20,8 @@ namespace WebFood.Models
         public DbSet<Meal> Meals { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderMeal> OrderMeal { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
         
     }
 }

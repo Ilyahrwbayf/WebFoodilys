@@ -94,57 +94,59 @@ namespace WebFood.Utility
 
             if (!db.CategoriesOfMeals.Any())
             {
-                db.CategoriesOfMeals.Add(new CategoryOfMeal() { Id=1,Name="Салат"});
+                for (int i = 1; i < 51; i++)
+                {
+                    db.CategoriesOfMeals.Add(new CategoryOfMeal() { Id=i,Name="Салаты",RestaurantId=i});
+                    
+                }
+
+                for (int i = 51; i < 101; i++)
+                {
+                    db.CategoriesOfMeals.Add(new CategoryOfMeal() { Id = i, Name = "Бургеры", RestaurantId = (i-50)});
+                }
+
                 db.SaveChanges();
             }
 
             if (!db.Meals.Any())
             {
-                for (int i = 0; i < 100; i++)
+                for (int i = 1; i < 51; i++)
                 {
-                    db.Meals.Add(new Meal()
+                    for (int j = 1; j < 11; j++)
                     {
-                        Name = "Салат Цезарь",
-                        Price = 500,
-                        Calories = 200,
-                        Weight = 150,
-                        RestaurantId = 1,
-                        ImageUrl = "/uploads/ceasar.jpg",
-                        CategoryId = 1,
-                        CreatedDate = DateTime.Now
-                    });
+                        db.Meals.Add(new Meal()
+                        {
+                            Name = "Салат Цезарь",
+                            Price = 399,
+                            Calories = 200,
+                            Weight = 150,
+                            RestaurantId = i,
+                            ImageUrl = "/uploads/ceasar.jpg",
+                            CategoryId = i,
+                            CreatedDate = DateTime.Now
+                        });
+
+                        
+                    }
                 }
 
-                for (int i = 0; i < 100; i++)
+                for (int i = 1; i < 51; i++)
                 {
-                    db.Meals.Add(new Meal()
+                    for (int j = 1; j < 11; j++)
                     {
-                        Name = "Салат Цезарь",
-                        Price = 500,
-                        Calories = 200,
-                        Weight = 150,
-                        RestaurantId = 2,
-                        ImageUrl = "/uploads/ceasar.jpg",
-                        CategoryId = 1,
-                        CreatedDate = DateTime.Now
-                    });
+                        db.Meals.Add(new Meal()
+                        {
+                            Name = "Бургер",
+                            Price = 250,
+                            Calories = 500,
+                            Weight = 100,
+                            RestaurantId = i,
+                            ImageUrl = "/uploads/burger.jpg",
+                            CategoryId = (i + 50),
+                            CreatedDate = DateTime.Now
+                        });
+                    }
                 }
-
-                for (int i = 0; i < 100; i++)
-                {
-                    db.Meals.Add(new Meal()
-                    {
-                        Name = "Салат Цезарь",
-                        Price = 500,
-                        Calories = 200,
-                        Weight = 150,
-                        RestaurantId = 3,
-                        ImageUrl = "/uploads/ceasar.jpg",
-                        CategoryId = 1,
-                        CreatedDate = DateTime.Now
-                    });
-                }
-
 
                 db.SaveChanges();
             }
