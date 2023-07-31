@@ -82,7 +82,10 @@
                                     </div>
                                 }
                                 <h5>
-                                    @meal.Price &#8381;
+                                    @{
+                                        string price = String.Format("{0:C0}",meal.Price);
+                                    }
+                                    @price
                                 </h5>
                                 <button class="btn btn-primary">Добавить</button>
                                 @if (this.User.IsInRole("Administrator") ||

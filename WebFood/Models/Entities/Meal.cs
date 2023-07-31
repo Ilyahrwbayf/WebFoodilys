@@ -10,7 +10,7 @@ namespace WebFood.Models.Entities
         public string ImageUrl { get; set; }
 
         [Range(1,10000,ErrorMessage ="Введите цену")]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public DateTime CreatedDate { get; set;}
         public Restaurant? Restaurant { get; set; }
         public int RestaurantId { get; set; }

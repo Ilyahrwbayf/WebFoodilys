@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebFood.Models.Entities;
 
 namespace WebFood.Service.CartService
@@ -6,16 +7,15 @@ namespace WebFood.Service.CartService
     public interface ICartService
     {
         public string ShoppingCartId { get; set; }
-        public const string CartSessionKey = "CartId";
         public ICartService GetCart(Controller controller);
         public void AddToCart(Meal meal);
-        public void RemoveFromCart(int id);
+        public int RemoveFromCart(int id);
         public void EmptyCart();
         public List<Cart> GetCartItems();
         public int GetCount();
         public decimal GetTotal();
         public int CreateOrder(Order order);
-        public string GetCartId(HttpContext context);
+        public string GetCartId(HttpContext context, ClaimsPrincipal User);
         public void MigrateCart(string userName);
 
     }
