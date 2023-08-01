@@ -1,0 +1,132 @@
+﻿@model WebFood.Models.ViewModels.ShoppingCartViewModel
+@{
+    ViewBag.Title = "Корзина";
+}
+
+<div class="container-xl">
+    <a class="text-decoration-none" asp-controller="Home" asp-action="Index">
+        <i class="bi bi-arrow-left"></i>
+        <span class="">Назад</span>
+    </a>
+    <h1>
+        @ViewBag.Title
+    </h1>
+</div>
+
+@*<p class="button">
+    @Html.ActionLink("Checkout
+>>", "AddressAndPayment", "Checkout")
+</p>*@
+
+<div class="mt-5 pt-3 me-1 toast-container position-absolute top-0 end-0">
+    <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="update-message">
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-xl">
+    <table class="table table-striped">
+        <tr>
+            @*Image*@
+            <th width="100"></th>
+            <th>
+                Имя блюда
+            </th>
+            <th>
+                Цена
+            </th>
+            <th>
+                Количество
+            </th>
+            @*Remove*@
+            <th></th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model.CartItems)
+        {
+            <tr id="row-@item.RecordId">
+                <td>
+                    <img class="img-fluid" src="@item.Meal.ImageUrl"  width="100" />
+                </td>
+                <td>
+                    @item.Meal.Name
+                </td>
+                <td>
+                    @item.Meal.Price.ToString("0,0")
+                </td>
+                <td id="item-count-@item.RecordId">
+                    @item.Count
+                </td>
+                <td>
+                    <partial name="_plusMinusInput", model="@item"></partial>
+                </td>
+                <td>
+                    <a href="#" class="RemoveLink" data-id="@item.RecordId">Убрать из корзины</a>
+                </td>
+            </tr>
+        }
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                Всего
+            </td>
+            <td id="cart-total">
+                @Model.CartTotal.ToString("0,0")
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+@section Scripts{
+    <script type="text/javascript">
+
+        // toast message init
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl)
+        })
+        
+
+
+        $(function () {
+            // Removing cart item
+            $(".RemoveLink").click(function () {
+                // Get the id from the link
+                var recordToDelete = $(this).attr("data-id");
+                if (recordToDelete != '') {
+                    // Perform the ajax post
+                    $.post("/ShoppingCart/RemoveFromCart", { "id": recordToDelete },
+                        function (data) {
+
+                            // Successful requests get here
+                            // Update the page elements
+                            if (data.itemCount == 0) {
+                                $('#row-' + data.deleteId).fadeOut('slow');
+                            } else {
+                                $('#item-count-' + data.deleteId).text(data.itemCount);
+                            }
+                            $('#cart-total').text(data.cartTotal);
+                            $('#update-message').text(data.message);
+                            toastList.forEach(toast => toast.show())
+                            $('#cart-status').text('Cart (' + data.cartCount + ')');
+                        });
+                }
+            });
+        });
+
+
+
+
+    </script>
+
+    <partial name="_plusMinusInputScripts" />
+}
+

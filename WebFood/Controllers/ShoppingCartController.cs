@@ -17,7 +17,7 @@ namespace WebFood.Controllers
             _daoMeal = daoMeal;
         }
 
-        public IActionResult Index()
+        public IActionResult Cart()
         {
             var viewModel = new ShoppingCartViewModel
             {
@@ -30,10 +30,10 @@ namespace WebFood.Controllers
 
         public IActionResult AddToCart(int id)
         {
-            Meal addedAlbum = _daoMeal.GetAsync(id).Result;
-            _cartService.AddToCart(addedAlbum);
+            Meal meal = _daoMeal.GetAsync(id).Result;
+            _cartService.AddToCart(meal);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Cart");
         }
         //
         // AJAX: /ShoppingCart/RemoveFromCart/5

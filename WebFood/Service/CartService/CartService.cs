@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.ConstrainedExecution;
 using System.Security.Claims;
 using WebFood.Models;
@@ -22,7 +23,7 @@ namespace WebFood.Service.CartService
         public void AddToCart(Meal meal)
         {
             // Get the matching cart and meal instances
-            var cartItem = _db.Carts.SingleOrDefault(
+            var cartItem = _db.Carts.FirstOrDefault(
                 c => c.CartId == ShoppingCartId
                 && c.MealId == meal.Id);
 
@@ -52,7 +53,7 @@ namespace WebFood.Service.CartService
         public int RemoveFromCart(int id)
         {
             // Get the cart
-            var cartItem = _db.Carts.Single(
+            var cartItem = _db.Carts.FirstOrDefault(
                 cart => cart.CartId == ShoppingCartId
                 && cart.RecordId == id);
 
@@ -88,7 +89,7 @@ namespace WebFood.Service.CartService
         }
         public List<Cart> GetCartItems()
         {
-            return _db.Carts.Where(
+            return _db.Carts.Include(c=>c.Meal).Where(
                   cart => cart.CartId == ShoppingCartId).ToList();
         }
         public int GetCount()

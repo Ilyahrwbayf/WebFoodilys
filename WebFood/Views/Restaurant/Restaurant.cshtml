@@ -87,7 +87,8 @@
                                     }
                                     @price
                                 </h5>
-                                <button class="btn btn-primary">Добавить</button>
+                                <a asp-action="AddToCart" asp-controller="ShoppingCart" asp-route-id="@meal.Id"
+                                    class="btn btn-primary">Добавить</a>
                                 @if (this.User.IsInRole("Administrator") ||
                                (this.User.IsInRole("Manager")
                                && this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.ManagerId.ToString()))
