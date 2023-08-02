@@ -19,8 +19,12 @@ castegory of meal service - done
 categories in menu - done
 link menu and main in Restaurant view - done
 edit dbInitializer - done
+add to cart ajax action - done
+add to cart function on btn plus - done
 
-add to cart ajax action
-add to cart function on btn plus
+delete cart on session end
+cartId setting in one place
+cart in restaurant view
+add to cart in restaurant by ajax
 
 cart

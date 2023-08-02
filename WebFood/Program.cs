@@ -10,11 +10,14 @@ using WebFood.Models;
 using WebFood.Service.MealService;
 using WebFood.Service.CategoryOfMealService;
 using WebFood.Service.CartService;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();  
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -40,6 +43,8 @@ builder.Services.AddTransient<ICartService, CartService>();
 
 var app = builder.Build();
 
+app.UseSession();
+
 DbInitializer.Initilize(app);
 
 // Configure the HTTP request pipeline.
@@ -56,6 +61,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -64,3 +71,22 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+//app.Run(async (context) =>
+//{
+//    string CartSessionKey = "CardId";
+//    if (context.Session.GetString(CartSessionKey) == null)
+//    {
+//        if (User.FindFirstValue(ClaimTypes.Email) != null)
+//        {
+//            context.Session.SetString(CartSessionKey, User.FindFirstValue(ClaimTypes.Email));
+//        }
+//        else
+//        {
+//            // Generate a new random GUID using System.Guid class
+//            Guid tempCartId = Guid.NewGuid();
+//            // Send tempCartId back to client as a cookie
+//            context.Session.SetString(CartSessionKey, tempCartId.ToString());
+//        }
+//    }
+//});

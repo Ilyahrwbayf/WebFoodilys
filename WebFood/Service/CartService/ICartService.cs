@@ -15,7 +15,6 @@ namespace WebFood.Service.CartService
         public int GetCount();
         public decimal GetTotal();
         public int CreateOrder(Order order);
-        public string GetCartId(HttpContext context, ClaimsPrincipal User);
         public void MigrateCart(string userName);
 
     }

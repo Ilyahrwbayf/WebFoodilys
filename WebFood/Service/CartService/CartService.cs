@@ -11,9 +11,6 @@ namespace WebFood.Service.CartService
     {
         private readonly AppDbContext _db;
         public string ShoppingCartId { get; set; }
-
-        public const string CartSessionKey = "CartId";
-
         public CartService(AppDbContext db)
         {
             _db = db;
@@ -114,7 +111,10 @@ namespace WebFood.Service.CartService
 
             return total ?? decimal.Zero;
         }
-
+        public Cart GetCartItem(int id)
+        {
+            return _db.Carts.Where(c => c.RecordId == id).FirstOrDefault();
+        }
         public int CreateOrder(Order order)
         {
             decimal orderTotal = 0;
@@ -148,26 +148,6 @@ namespace WebFood.Service.CartService
             return order.Id;
         }
 
-        // We're using HttpContextBase to allow access to cookies.
-        public string GetCartId(HttpContext context, ClaimsPrincipal User)
-        {
-            if (context.Session.GetString(CartSessionKey) == null)
-            {
-                if (User.FindFirstValue(ClaimTypes.Email)!=null)
-                {
-                    context.Session.SetString(CartSessionKey, User.FindFirstValue(ClaimTypes.Email));
-                }
-                else
-                {
-                    // Generate a new random GUID using System.Guid class
-                    Guid tempCartId = Guid.NewGuid();
-                    // Send tempCartId back to client as a cookie
-                    context.Session.SetString(CartSessionKey,tempCartId.ToString());
-                }
-            }
-            return context.Session.GetString(CartSessionKey);
-        }
-
         // When a user has logged in, migrate their shopping cart to
         // be associated with their username
         public void MigrateCart(string userName)
@@ -182,10 +162,6 @@ namespace WebFood.Service.CartService
             _db.SaveChanges();
         }
 
-        public Cart GetCartItem(int id)
-        {
-            return _db.Carts.Where(c => c.RecordId == id).FirstOrDefault();
-        }
     }
 
 
