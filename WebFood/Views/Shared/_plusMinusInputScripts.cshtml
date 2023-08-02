@@ -4,6 +4,10 @@
 
         fieldName = $(this).attr('data-field');
         type = $(this).attr('data-type');
+
+        // Get the record id from the btn
+        var recordId = $(this).attr("data-recordId");
+
         var input = $("input[name='" + fieldName + "']");
         var currentVal = parseInt(input.val());
         if (!isNaN(currentVal)) {
@@ -11,6 +15,7 @@
 
                 if (currentVal > input.attr('min')) {
                     input.val(currentVal - 1).change();
+                    RemoveCartItem(recordId);
                 }
                 if (parseInt(input.val()) == input.attr('min')) {
                     $(this).attr('disabled', true);
@@ -20,6 +25,7 @@
 
                 if (currentVal < input.attr('max')) {
                     input.val(currentVal + 1).change();
+                    AddMealToCart(recordId);
                 }
                 if (parseInt(input.val()) == input.attr('max')) {
                     $(this).attr('disabled', true);
@@ -69,4 +75,51 @@
             e.preventDefault();
         }
     });
+
+    // Removing cart item
+    function RemoveCartItem(recordId) {
+
+        if (recordId != '') {
+                // Perform the ajax post
+            $.post("/ShoppingCart/RemoveFromCart", { "id": recordId },
+                    function (data) {
+                        
+                        // Successful requests get here
+                        // Update the page elements
+                        if (data.itemCount == 0) {
+                        
+                            $('#row-' + data.deleteId).fadeOut('slow');
+                        } else {
+                            $('#item-count-' + data.deleteId).text(data.itemCount);
+                        }
+                        $('#cart-total').text(data.cartTotal);
+                        $('#update-message').text(data.message);
+                        toastList.forEach(toast => toast.show())
+                        $('#cart-status').text('Cart (' + data.cartCount + ')');
+                    });
+            }
+    }
+
+    // Adding meal to cart
+    function AddMealToCart(recordId) {
+
+        if (recordId != '') {
+            // Perform the ajax post
+            $.post("/ShoppingCart/AddToCartAjax", { "id": recordId },
+                function (data) {
+
+                    // Successful requests get here
+                    // Update the page elements
+
+                    $('#item-count-' + data.addedId).text(data.itemCount);
+
+                    $('#cart-total').text(data.cartTotal);
+                    $('#update-message').text(data.message);
+                    toastList.forEach(toast => toast.show())
+                    $('#cart-status').text('Cart (' + data.cartCount + ')');
+                });
+        }
+    }
+
+
 </script>

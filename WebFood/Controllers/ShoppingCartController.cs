@@ -35,12 +35,35 @@ namespace WebFood.Controllers
 
             return RedirectToAction("Cart");
         }
+        //AJAX AddtoCartAJAX
+        [HttpPost]
+        public IActionResult AddToCartAjax(int id)
+        {
+            int mealId = _cartService.GetCartItem(id).MealId;
+            Meal meal = _daoMeal.GetAsync(mealId).Result;
+            int itemCount = _cartService.AddToCart(meal);
+            
+
+            // Display the confirmation message
+            var results = new ShoppingCartAddViewModel
+            {
+                Message = "Блюдо " + meal.Name + " добавлено в корзину",
+                CartTotal = _cartService.GetTotal(),
+                CartCount = _cartService.GetCount(),
+                ItemCount = itemCount,
+                AddedId = id
+            };
+            return Json(results);
+        }
+
+
         //
         // AJAX: /ShoppingCart/RemoveFromCart/5
         [HttpPost]
         public IActionResult RemoveFromCart(int id)
         {
-            string mealName = _daoMeal.GetAsync(id).Result.Name;
+            int mealId = _cartService.GetCartItem(id).MealId;
+            string mealName = _daoMeal.GetAsync(mealId).Result.Name;
             int itemCount = _cartService.RemoveFromCart(id);
 
             // Display the confirmation message

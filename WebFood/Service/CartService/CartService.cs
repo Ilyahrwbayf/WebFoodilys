@@ -20,7 +20,7 @@ namespace WebFood.Service.CartService
             ShoppingCartId = string.Empty;
         }
 
-        public void AddToCart(Meal meal)
+        public int AddToCart(Meal meal)
         {
             // Get the matching cart and meal instances
             var cartItem = _db.Carts.FirstOrDefault(
@@ -48,6 +48,7 @@ namespace WebFood.Service.CartService
             }
             // Save changes
             _db.SaveChanges();
+            return cartItem.Count;
         }
 
         public int RemoveFromCart(int id)
@@ -179,6 +180,11 @@ namespace WebFood.Service.CartService
                 item.CartId = userName;
             }
             _db.SaveChanges();
+        }
+
+        public Cart GetCartItem(int id)
+        {
+            return _db.Carts.Where(c => c.RecordId == id).FirstOrDefault();
         }
     }
 

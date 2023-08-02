@@ -7,10 +7,11 @@ namespace WebFood.Service.CartService
     public interface ICartService
     {
         public string ShoppingCartId { get; set; }
-        public void AddToCart(Meal meal);
+        public int AddToCart(Meal meal);
         public int RemoveFromCart(int id);
         public void EmptyCart();
         public List<Cart> GetCartItems();
+        public Cart GetCartItem(int id);
         public int GetCount();
         public decimal GetTotal();
         public int CreateOrder(Order order);
