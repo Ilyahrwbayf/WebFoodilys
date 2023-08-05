@@ -11,6 +11,7 @@ using WebFood.Service.MealService;
 using WebFood.Service.CategoryOfMealService;
 using WebFood.Service.CartService;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,12 +39,13 @@ builder.Services.AddTransient<IDaoRestaurantType, DaoRestaurantType>();
 builder.Services.AddTransient<IDaoUser, DaoUser>();
 builder.Services.AddTransient<IDaoMeal, DaoMeal>();
 builder.Services.AddTransient<IDaoCategoryOfMeal, DaoCategoryOfMeal>();
+
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ICartService, CartService>();
 
 
 var app = builder.Build();
 
-app.UseSession();
 
 DbInitializer.Initilize(app);
 
@@ -70,23 +72,28 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+app.UseSession();
 
-//app.Run(async (context) =>
-//{
-//    string CartSessionKey = "CardId";
-//    if (context.Session.GetString(CartSessionKey) == null)
-//    {
-//        if (User.FindFirstValue(ClaimTypes.Email) != null)
-//        {
-//            context.Session.SetString(CartSessionKey, User.FindFirstValue(ClaimTypes.Email));
-//        }
-//        else
-//        {
-//            // Generate a new random GUID using System.Guid class
-//            Guid tempCartId = Guid.NewGuid();
-//            // Send tempCartId back to client as a cookie
-//            context.Session.SetString(CartSessionKey, tempCartId.ToString());
-//        }
-//    }
-//});
+app.Use(async (context, next) =>
+{
+    string CartSessionKey = "CardId";
+    if (context.Session.GetString(CartSessionKey) == null)
+    {
+        if (context.User.FindFirstValue(ClaimTypes.Email) != null)
+        {
+            context.Session.SetString(CartSessionKey, context.User.FindFirstValue(ClaimTypes.Email));
+
+        }
+        else
+        {
+            // Generate a new random GUID using System.Guid class
+            Guid tempCartId = Guid.NewGuid();
+            // Send tempCartId back to client as a cookie
+            context.Session.SetString(CartSessionKey, tempCartId.ToString());
+        }
+    }
+
+    await next.Invoke();
+});
+
+app.Run();

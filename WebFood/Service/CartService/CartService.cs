@@ -11,10 +11,10 @@ namespace WebFood.Service.CartService
     {
         private readonly AppDbContext _db;
         public string ShoppingCartId { get; set; }
-        public CartService(AppDbContext db)
+        public CartService(AppDbContext db, IHttpContextAccessor context)
         {
             _db = db;
-            ShoppingCartId = string.Empty;
+            ShoppingCartId = context.HttpContext.Session.GetString("CardId");
         }
 
         public int AddToCart(Meal meal)
