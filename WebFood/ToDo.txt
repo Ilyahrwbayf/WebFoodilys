@@ -23,7 +23,7 @@ add to cart ajax action - done
 add to cart function on btn plus - done
 
 delete cart on session end
-cartId setting in one place
+cartId setting in one place - done
 cart in restaurant view
 add to cart in restaurant by ajax
 

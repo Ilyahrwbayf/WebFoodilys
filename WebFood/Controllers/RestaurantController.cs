@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using WebFood.Service.MealService;
 using WebFood.Service.CategoryOfMealService;
+using WebFood.Service.CartService;
 
 namespace WebFood.Controllers
 {
@@ -25,13 +26,15 @@ namespace WebFood.Controllers
         private readonly IDaoUser _daoUser;
         private readonly IDaoMeal _daoMeal;
         private readonly IDaoCategoryOfMeal _daoCategoryOfMeal;
+        private readonly ICartService _cartService;
 
         public RestaurantController(IDaoRestaurant daoRestaurant,
                                     IDaoTypeOfRestaurant daoTypeOfRestaurant,
                                     IDaoRestaurantType daoRestaurantType,
                                     IDaoUser daoUser,
                                     IDaoMeal daoMeal,
-                                    IDaoCategoryOfMeal daoCategoryOfMeal)
+                                    IDaoCategoryOfMeal daoCategoryOfMeal,
+                                    ICartService cartService)
         {
             _daoRestaurant= daoRestaurant;
             _daoTypeOfRestaurant = daoTypeOfRestaurant;
@@ -39,6 +42,7 @@ namespace WebFood.Controllers
             _daoUser= daoUser;
             _daoMeal= daoMeal;
             _daoCategoryOfMeal = daoCategoryOfMeal;
+            _cartService= cartService;
         }
         public IActionResult Restaurant(int restaurantId)
         {
@@ -50,7 +54,14 @@ namespace WebFood.Controllers
             List<CategoryOfMeal> menu = _daoCategoryOfMeal.GetAllAsync(restaurantId).Result;
             ViewBag.Menu = menu;
 
-           ViewData["Title"] = restaurant.Name;
+            var cart = new ShoppingCartViewModel
+            {
+                CartItems = _cartService.GetCartItems(),
+                CartTotal = _cartService.GetTotal()
+            };
+            ViewBag.Cart = cart;
+
+            ViewData["Title"] = restaurant.Name;
            return View(restaurant);
         }
 

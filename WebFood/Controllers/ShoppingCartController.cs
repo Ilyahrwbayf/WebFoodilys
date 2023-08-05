@@ -84,5 +84,13 @@ namespace WebFood.Controllers
             return PartialView("CartSummary");
         }
 
+        public IActionResult EmptyCart()
+        {
+            _cartService.EmptyCart();
+            TempData["Message"] = "Корзина очищена";
+
+            return RedirectToAction("Cart");
+        }
+
     }
 }

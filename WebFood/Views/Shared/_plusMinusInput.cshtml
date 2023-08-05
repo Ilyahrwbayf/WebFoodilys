@@ -3,25 +3,25 @@
 @{
     int recordId = Model.RecordId;
 }
-<div class="col-sm-3">
-    <div class="input-group">
-        <span class="input-group-prepend">
-            <button type="button" class="btn btn-outline-secondary btn-number"
-                    data-type="minus" data-field="quant[@recordId]"
-                    data-recordId="@recordId">
-                <i class="bi bi-dash"></i>
-            </button>
-        </span>
-        <input type="text" name="quant[@recordId]" class="form-control input-number" value="@Model.Count" min="0" max="100">
-        <span class="input-group-append">
-            <button type="button" class="btn btn-outline-secondary btn-number"
-                    data-type="plus" data-field="quant[@recordId]"
-                    data-recordId="@recordId">
-                <i class="bi bi-plus"></i>
-            </button>
-        </span>
-    </div>
+
+<div class="input-group">
+    <span class="input-group-prepend">
+        <button type="button" class="btn btn-outline-secondary btn-number"
+                data-type="minus" data-field="quant[@recordId]"
+                data-recordId="@recordId">
+            <i class="bi bi-dash"></i>
+        </button>
+    </span>
+    <input type="text" name="quant[@recordId]" class="form-control input-number" value="@Model.Count" min="0" max="100">
+    <span class="input-group-append">
+        <button type="button" class="btn btn-outline-secondary btn-number"
+                data-type="plus" data-field="quant[@recordId]"
+                data-recordId="@recordId">
+            <i class="bi bi-plus"></i>
+        </button>
+    </span>
 </div>
+
 
 
 
