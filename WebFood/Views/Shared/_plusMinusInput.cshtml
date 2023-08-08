@@ -2,21 +2,24 @@
 @model Cart
 @{
     int recordId = Model.RecordId;
+    int mealId = Model.MealId;
 }
 
 <div class="input-group">
     <span class="input-group-prepend">
         <button type="button" class="btn btn-outline-secondary btn-number"
                 data-type="minus" data-field="quant[@recordId]"
-                data-recordId="@recordId">
+                data-recordId="@recordId"
+                data-mealId="@mealId">
             <i class="bi bi-dash"></i>
         </button>
     </span>
-    <input type="text" name="quant[@recordId]" class="form-control input-number" value="@Model.Count" min="0" max="100">
+    <input id="item-count-@recordId" type="text" name="quant[@recordId]" class="form-control input-number" value="@Model.Count" min="0" max="100">
     <span class="input-group-append">
         <button type="button" class="btn btn-outline-secondary btn-number"
                 data-type="plus" data-field="quant[@recordId]"
-                data-recordId="@recordId">
+                data-recordId="@recordId"
+                data-mealId="@mealId">
             <i class="bi bi-plus"></i>
         </button>
     </span>

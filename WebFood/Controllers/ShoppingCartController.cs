@@ -29,21 +29,22 @@ namespace WebFood.Controllers
             return View(viewModel);
         }
 
+        
+        public IActionResult MiniCart()
+        {
+            var viewModel = new ShoppingCartViewModel
+            {
+                CartItems = _cartService.GetCartItems(),
+                CartTotal = _cartService.GetTotal()
+            };
+            return View(viewModel);
+        }
+
+        
         public IActionResult AddToCart(int id)
         {
             Meal meal = _daoMeal.GetAsync(id).Result;
-            _cartService.AddToCart(meal);
-
-            return RedirectToAction("Cart");
-        }
-        //AJAX AddtoCartAJAX
-        [HttpPost]
-        public IActionResult AddToCartAjax(int id)
-        {
-            int mealId = _cartService.GetCartItem(id).MealId;
-            Meal meal = _daoMeal.GetAsync(mealId).Result;
             int itemCount = _cartService.AddToCart(meal);
-            
 
             // Display the confirmation message
             var results = new ShoppingCartAddViewModel
@@ -52,10 +53,43 @@ namespace WebFood.Controllers
                 CartTotal = _cartService.GetTotal(),
                 CartCount = _cartService.GetCount(),
                 ItemCount = itemCount,
-                AddedId = id
+                AddedId = _cartService
+                        .GetCartItems()
+                        .Where(c=>c.MealId==id)
+                        .FirstOrDefault().RecordId
             };
             return Json(results);
         }
+
+
+
+        //public IActionResult AddToCart(int id)
+        //{
+        //    Meal meal = _daoMeal.GetAsync(id).Result;
+        //    _cartService.AddToCart(meal);
+
+        //    return RedirectToAction("Cart");
+        //}
+        ////AJAX AddtoCartAJAX
+        //[HttpPost]
+        //public IActionResult AddToCartAjax(int id)
+        //{
+        //    int mealId = _cartService.GetCartItem(id).MealId;
+        //    Meal meal = _daoMeal.GetAsync(mealId).Result;
+        //    int itemCount = _cartService.AddToCart(meal);
+
+
+        //    // Display the confirmation message
+        //    var results = new ShoppingCartAddViewModel
+        //    {
+        //        Message = "Блюдо " + meal.Name + " добавлено в корзину",
+        //        CartTotal = _cartService.GetTotal(),
+        //        CartCount = _cartService.GetCount(),
+        //        ItemCount = itemCount,
+        //        AddedId = id
+        //    };
+        //    return Json(results);
+        //}
 
 
         //
@@ -94,3 +128,8 @@ namespace WebFood.Controllers
 
     }
 }
+
+
+
+
+
