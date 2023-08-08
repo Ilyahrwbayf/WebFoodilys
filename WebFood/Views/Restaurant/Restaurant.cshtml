@@ -109,7 +109,7 @@
             <div class="sticky-top pt-3">
                 <div class="menu d-flex flex-column align-items-start p-3 pt-0">
                     <h2>Корзина</h2>
-                    <a asp-controller="ShoppingCart" asp-action="EmptyCart">Очистить корзину</a>
+                    <a href="" id="empty-cart">Очистить корзину</a>
                     <div class="mini-cart">
                         <partial name="MiniCart" model="ViewBag.Cart"/>
                     </div>
@@ -128,15 +128,15 @@
 
     <script>
 
-        // toast message init
+                                     // toast message init
         var toastElList = [].slice.call(document.querySelectorAll('.toast'))
         var toastList = toastElList.map(function (toastEl) {
             return new bootstrap.Toast(toastEl)
         })
 
-        //add to card btn
+                                        //add to card btn
 
-        $('.add-to-cart-btn').click(async function (e) {
+        $('.add-to-cart-btn').click(function (e) {
             e.preventDefault();
 
             // Get the meal id from the btn
@@ -153,21 +153,42 @@
                     //If new element in cart
                     if (data.itemCount==1){
                         //Refresh mini cart
-                        $(".mini-cart").empty();
-                        $.post("/ShoppingCart/MiniCart",
-                            function (data) {
-                                // Append mini cart
-                                $(".mini-cart").append(data);
-                                // Make buttons clickable
-                                $('.btn-number').click(function (e) {
-                                    e.preventDefault();
-                                    BtnNumber.call($(this));
-
-                                });
-                            });
+                        RefreshMiniCart();
                     }
 
                 });
         });
+
+
+                                        // Empty cart
+
+        $('#empty-cart').click(function (e) {
+            e.preventDefault();
+            $.post("/ShoppingCart/EmptyCartAjax",
+                function (data) {
+                    // Update the page elements
+                    $('#cart-total').text(0);
+                    //Refresh mini cart
+                    RefreshMiniCart();
+                    
+                });
+        });
+
+                                        //Refresh Mini Cart
+        function RefreshMiniCart(){
+            $(".mini-cart").empty();
+            $.post("/ShoppingCart/MiniCart",
+                function (data) {
+                    // Append mini cart
+                    $(".mini-cart").append(data);
+                    // Make buttons clickable
+                    $('.btn-number').click(function (e) {
+                        e.preventDefault();
+                        BtnNumber.call($(this));
+
+                    });
+                });
+        }
+
     </script>
     }

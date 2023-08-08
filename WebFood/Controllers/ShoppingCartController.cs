@@ -61,37 +61,6 @@ namespace WebFood.Controllers
             return Json(results);
         }
 
-
-
-        //public IActionResult AddToCart(int id)
-        //{
-        //    Meal meal = _daoMeal.GetAsync(id).Result;
-        //    _cartService.AddToCart(meal);
-
-        //    return RedirectToAction("Cart");
-        //}
-        ////AJAX AddtoCartAJAX
-        //[HttpPost]
-        //public IActionResult AddToCartAjax(int id)
-        //{
-        //    int mealId = _cartService.GetCartItem(id).MealId;
-        //    Meal meal = _daoMeal.GetAsync(mealId).Result;
-        //    int itemCount = _cartService.AddToCart(meal);
-
-
-        //    // Display the confirmation message
-        //    var results = new ShoppingCartAddViewModel
-        //    {
-        //        Message = "Блюдо " + meal.Name + " добавлено в корзину",
-        //        CartTotal = _cartService.GetTotal(),
-        //        CartCount = _cartService.GetCount(),
-        //        ItemCount = itemCount,
-        //        AddedId = id
-        //    };
-        //    return Json(results);
-        //}
-
-
         //
         // AJAX: /ShoppingCart/RemoveFromCart/5
         [HttpPost]
@@ -124,6 +93,12 @@ namespace WebFood.Controllers
             TempData["Message"] = "Корзина очищена";
 
             return RedirectToAction("Cart");
+        }
+
+        public IActionResult EmptyCartAjax()
+        {
+            _cartService.EmptyCart();
+            return Ok();
         }
 
     }
