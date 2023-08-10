@@ -23,8 +23,8 @@ namespace WebFood.Controllers
         {
             var viewModel = new ShoppingCartViewModel
             {
-                CartItems = _cartService.GetCartItems(),
-                CartTotal = _cartService.GetTotal()
+                CartItems = _cartService.GetCartItemsAsync().Result,
+                CartTotal = _cartService.GetTotalAsync().Result,
             };
             return View(viewModel);
         }
@@ -34,8 +34,8 @@ namespace WebFood.Controllers
         {
             var viewModel = new ShoppingCartViewModel
             {
-                CartItems = _cartService.GetCartItems(),
-                CartTotal = _cartService.GetTotal()
+                CartItems = _cartService.GetCartItemsAsync().Result,
+                CartTotal = _cartService.GetTotalAsync().Result
             };
             return View(viewModel);
         }
@@ -44,17 +44,17 @@ namespace WebFood.Controllers
         public IActionResult AddToCart(int id)
         {
             Meal meal = _daoMeal.GetAsync(id).Result;
-            int itemCount = _cartService.AddToCart(meal);
+            int itemCount = _cartService.AddToCartAsync(meal).Result;
 
             // Display the confirmation message
             var results = new ShoppingCartAddViewModel
             {
-                Message = "Блюдо " + meal.Name + " добавлено в корзину",
-                CartTotal = _cartService.GetTotal(),
-                CartCount = _cartService.GetCount(),
+                Message = $"Блюдо {meal.Name} добавлено в корзину",
+                CartTotal = _cartService.GetTotalAsync().Result,
+                CartCount = _cartService.GetCountAsync().Result,
                 ItemCount = itemCount,
                 AddedId = _cartService
-                        .GetCartItems()
+                        .GetCartItemsAsync().Result
                         .Where(c=>c.MealId==id)
                         .FirstOrDefault().RecordId
             };
@@ -66,16 +66,16 @@ namespace WebFood.Controllers
         [HttpPost]
         public IActionResult RemoveFromCart(int id)
         {
-            int mealId = _cartService.GetCartItem(id).MealId;
+            int mealId = _cartService.GetCartItemAsync(id).Result.MealId;
             string mealName = _daoMeal.GetAsync(mealId).Result.Name;
             int itemCount = _cartService.RemoveFromCart(id);
 
             // Display the confirmation message
             var results = new ShoppingCartRemoveViewModel
             {
-                Message = "Блюдо " + mealName + " убрано из корзины",
-                CartTotal = _cartService.GetTotal(),
-                CartCount = _cartService.GetCount(),
+                Message = $"Блюдо {mealName} убрано из корзины",
+                CartTotal = _cartService.GetTotalAsync().Result,
+                CartCount = _cartService.GetCountAsync().Result,
                 ItemCount = itemCount,
                 DeleteId = id
             };
@@ -83,7 +83,7 @@ namespace WebFood.Controllers
         }
         public IActionResult CartSummary()
         {
-            ViewData["CartCount"] = _cartService.GetCount();
+            ViewData["CartCount"] = _cartService.GetCountAsync().Result;
             return PartialView("CartSummary");
         }
 

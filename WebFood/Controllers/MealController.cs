@@ -17,16 +17,21 @@ namespace WebFood.Controllers
         private readonly IDaoMeal _daoMeal;
         private readonly IDaoRestaurant _daoRestaurant;
         private readonly IDaoCategoryOfMeal _daoCategoryOfMeal;
+        private readonly IConfiguration _config;
 
-        public MealController(IDaoMeal daoMeal, IDaoRestaurant daoRestaurant, IDaoCategoryOfMeal daoCategoryOfMeal)
+        public MealController(IDaoMeal daoMeal,
+                              IDaoRestaurant daoRestaurant,
+                              IDaoCategoryOfMeal daoCategoryOfMeal,
+                              IConfiguration configuration)
         {
             _daoMeal = daoMeal;     
             _daoRestaurant = daoRestaurant;
             _daoCategoryOfMeal = daoCategoryOfMeal;
+            _config = configuration;
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = $"{Roles.Administator}, {Roles.Manager}")]
         public IActionResult AddMeal(int restaurantId)
         {
             Restaurant restaurant = _daoRestaurant.GetAsync(restaurantId).Result;
@@ -38,14 +43,12 @@ namespace WebFood.Controllers
 
                 return View(viewModel);
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = $"{Roles.Administator}, {Roles.Manager}")]
         public IActionResult AddMeal(MealViewModel viewModel, [FromForm(Name = "Meal.ImageUrl")] IFormFile Imageurl)
         {
             Restaurant restaurant = _daoRestaurant.GetAsync(viewModel.Meal.RestaurantId).Result;
@@ -54,20 +57,18 @@ namespace WebFood.Controllers
                 if (ModelState.IsValid)
                 {
                     AddMealToDb(viewModel.Meal, viewModel.Meal.CategoryId, Imageurl);
-                    ViewBag.Message = "Блюдо " + viewModel.Meal.Name + " добавлено";
+                    ViewBag.Message = $"Блюдо {viewModel.Meal.Name} добавлено";
                 }
 
                 viewModel.Categories = GetCategoriesOfMeal(viewModel.Meal.RestaurantId);
                 return View(viewModel);
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = $"{Roles.Administator}, {Roles.Manager}")]
         public IActionResult EditMeal(int mealId)
         {
             Meal meal = _daoMeal.GetAsync(mealId).Result;
@@ -80,14 +81,12 @@ namespace WebFood.Controllers
 
                 return View(viewModel);
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = $"{Roles.Administator}, {Roles.Manager}")]
         public IActionResult EditMeal(MealViewModel viewModel)
         {
             Restaurant restaurant = _daoRestaurant.GetAsync(viewModel.Meal.RestaurantId).Result;
@@ -96,20 +95,19 @@ namespace WebFood.Controllers
                 if (ModelState.IsValid)
                 {
                     _daoMeal.Update(viewModel.Meal);
-                    ViewBag.Message = "Блюдо " + viewModel.Meal.Name + " изменено";
+                    ViewBag.Message = $"Блюдо {viewModel.Meal.Name} изменено";
                 }
 
                 viewModel.Categories = GetCategoriesOfMeal(viewModel.Meal.RestaurantId);
                 return View(viewModel);
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
+            return RedirectToAction("Index", "Home");
+
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = $"{Roles.Administator}, {Roles.Manager}")]
         public IActionResult ChangeMealImg(int mealId)
         {
             Meal meal = _daoMeal.GetAsync(mealId).Result;
@@ -119,12 +117,12 @@ namespace WebFood.Controllers
             {
                 return View(meal);
             }
-            else
-                return RedirectToAction("Index", "Home");
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = $"{Roles.Administator}, {Roles.Manager}")]
         public IActionResult ChangeMealImg(Meal meal, [FromForm(Name = "ImageUrl")] IFormFile ImageUrl)
         {
             meal = _daoMeal.GetAsync(meal.Id).Result;
@@ -135,7 +133,7 @@ namespace WebFood.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    string filePath = "wwwroot/" + meal.ImageUrl;
+                    string filePath = _config.GetValue<string>("ImgFilesPath") + meal.ImageUrl;
 
 
                     if (System.IO.File.Exists(filePath))
@@ -151,8 +149,8 @@ namespace WebFood.Controllers
                 }
                 return View(meal);
             }
-            else
-                return RedirectToAction("Index", "Home");
+            
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -164,7 +162,7 @@ namespace WebFood.Controllers
             return RedirectToAction("Restaurant", "Restaurant", new {restaurantId = restaurantId});
         }
 
-        //  HELP METHODS
+                                            //  HELP METHODS
 
         private void AddMealToDb(Meal meal, int categoryId, IFormFile Imageurl)
         {

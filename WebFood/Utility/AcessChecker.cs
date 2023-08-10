@@ -8,7 +8,8 @@ namespace WebFood.Utility
         public static bool IsAdminOrManager(Restaurant restaurant, ClaimsPrincipal User)
         {
             return (User.FindFirstValue(ClaimTypes.NameIdentifier) == restaurant.ManagerId.ToString()
-                        || User.IsInRole("Administrator"));
+                        || User.IsInRole($"{Roles.Administator}"));
+
         }
     }
 }

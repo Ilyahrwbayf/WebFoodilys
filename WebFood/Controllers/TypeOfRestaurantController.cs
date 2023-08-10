@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
 using WebFood.Models.Entities;
 using WebFood.Service.CategoryService;
+using WebFood.Utility;
 
 namespace WebFood.Controllers
 {
@@ -17,26 +18,26 @@ namespace WebFood.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = $"{Roles.Administator}")]
         public IActionResult AddTypeOfRestaurant(TypeOfRestaurant typeOfRestaurant)
         {
             return View(typeOfRestaurant);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = $"{Roles.Administator}")]
         public IActionResult AddTypeOfRestaurant(TypeOfRestaurant typeOfRestaurant, IFormCollection formValues)
         {
             if (ModelState.IsValid)
             {
                 _daoTypeOfRestaurant.AddAsync(typeOfRestaurant);
-                ViewBag.Message = "Категория " + typeOfRestaurant.Name + " добавлена";
+                ViewBag.Message = $"Категория {typeOfRestaurant.Name} добавлена";
             }
             return View(typeOfRestaurant);
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = $"{Roles.Administator}")]
         public IActionResult EditTypeOfRestaurant()
         {
             ViewBag.RestaurantCategories = GetTypesOfRestaurants();
@@ -44,20 +45,20 @@ namespace WebFood.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = $"{Roles.Administator}")]
         public IActionResult EditTypeOfRestaurant(TypeOfRestaurant typeOfRestaurant)
         {
             if (ModelState.IsValid)
             {
                 _daoTypeOfRestaurant.Update(typeOfRestaurant);
-                ViewBag.Message = "Категория изменена на" + typeOfRestaurant.Name;
+                ViewBag.Message = $"Категория изменена на {typeOfRestaurant.Name}";
             }
             ViewBag.RestaurantCategories = GetTypesOfRestaurants();
             return View(typeOfRestaurant);
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = $"{Roles.Administator}")]
         public IActionResult DeleteTypeOfRestaurant()
         {
             ViewBag.RestaurantCategories = GetTypesOfRestaurants();
@@ -65,13 +66,13 @@ namespace WebFood.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = $"{Roles.Administator}")]
         public IActionResult DeleteTypeOfRestaurant(TypeOfRestaurant typeOfRestaurant)
         {
             if (ModelState.IsValid)
             {
                 _daoTypeOfRestaurant.Delete(typeOfRestaurant.Id);
-                ViewBag.Message = "Категория " + typeOfRestaurant.Name + " удалена";
+                ViewBag.Message = $"Категория {typeOfRestaurant.Name} удалена";
             }
             ViewBag.RestaurantCategories = GetTypesOfRestaurants();
             return View(typeOfRestaurant);

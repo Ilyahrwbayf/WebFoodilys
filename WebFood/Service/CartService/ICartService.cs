@@ -7,14 +7,14 @@ namespace WebFood.Service.CartService
     public interface ICartService
     {
         public string ShoppingCartId { get; set; }
-        public int AddToCart(Meal meal);
+        public Task<int> AddToCartAsync(Meal meal);
         public int RemoveFromCart(int id);
         public void EmptyCart();
-        public List<Cart> GetCartItems();
-        public Cart GetCartItem(int id);
-        public int GetCount();
-        public decimal GetTotal();
-        public int CreateOrder(Order order);
+        public Task<List<Cart>> GetCartItemsAsync();
+        public Task<Cart> GetCartItemAsync(int id);
+        public Task<int> GetCountAsync();
+        public Task<decimal> GetTotalAsync();
+        public Task<int> CreateOrderAsync(Order order);
         public void MigrateCart(string userName);
 
     }

@@ -22,7 +22,7 @@ namespace WebFood.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = $"{Roles.Administator}, {Roles.Manager}")]
         public IActionResult AddCategoryOfMeal(int restaurantId)
         {
             Restaurant restaurant = _daoRestaurant.GetAsync(restaurantId).Result;
@@ -31,14 +31,12 @@ namespace WebFood.Controllers
                 CategoryOfMeal category = new CategoryOfMeal() { RestaurantId = restaurantId }; 
                 return View(category);
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = $"{Roles.Administator}, {Roles.Manager}")]
         public IActionResult AddCategoryOfMeal(CategoryOfMeal category)
         {
             Restaurant restaurant = _daoRestaurant.GetAsync(category.RestaurantId).Result;
@@ -50,19 +48,15 @@ namespace WebFood.Controllers
                     ViewBag.Message = "Категория " + category.Name + " добавлена";
                 }
 
-
                 return View(category);
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
+            
+            return RedirectToAction("Index", "Home");
         }
 
 
         [HttpGet]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = $"{Roles.Administator}, {Roles.Manager}")]
         public IActionResult EditCategoryOfMeal(int restaurantId)
         {
             Restaurant restaurant = _daoRestaurant.GetAsync(restaurantId).Result;
@@ -72,14 +66,12 @@ namespace WebFood.Controllers
                 ViewBag.Categories = GetCategoriesOfMeal(restaurantId);
                 return View(category);
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = $"{Roles.Administator}, {Roles.Manager}")]
         public IActionResult EditCategoryOfMeal(CategoryOfMeal category)
         {
             Restaurant restaurant = _daoRestaurant.GetAsync(category.RestaurantId).Result;
@@ -93,14 +85,12 @@ namespace WebFood.Controllers
                 ViewBag.Categories = GetCategoriesOfMeal(restaurant.Id);
                 return View(category);
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = $"{Roles.Administator}, {Roles.Manager}")]
         public IActionResult DeleteCategoryOfMeal(int restaurantId)
         {
             Restaurant restaurant = _daoRestaurant.GetAsync(restaurantId).Result;
@@ -110,14 +100,12 @@ namespace WebFood.Controllers
                 ViewBag.Categories = GetCategoriesOfMeal(restaurantId);
                 return View(category);
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = $"{Roles.Administator}, {Roles.Manager}")]
         public IActionResult DeleteCategoryOfMeal(CategoryOfMeal category)
         {
             Restaurant restaurant = _daoRestaurant.GetAsync(category.RestaurantId).Result;
@@ -131,15 +119,13 @@ namespace WebFood.Controllers
                 ViewBag.Categories = GetCategoriesOfMeal(category.RestaurantId);
                 return View(category);
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
+            return RedirectToAction("Index", "Home");
         }
 
 
 
-        // HELP METHODS
+                                                // HELP METHODS
 
         private SelectList GetCategoriesOfMeal(int restaurantId)
         {

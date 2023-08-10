@@ -17,10 +17,10 @@ namespace WebFood.Service.CartService
             ShoppingCartId = context.HttpContext.Session.GetString("CardId");
         }
 
-        public int AddToCart(Meal meal)
+        public async Task<int> AddToCartAsync(Meal meal)
         {
             // Get the matching cart and meal instances
-            var cartItem = _db.Carts.FirstOrDefault(
+            var cartItem = await _db.Carts.FirstOrDefaultAsync(
                 c => c.CartId == ShoppingCartId
                 && c.MealId == meal.Id);
 
@@ -35,7 +35,7 @@ namespace WebFood.Service.CartService
                     RestaurantId = meal.RestaurantId,
                     DateCreated = DateTime.Now
                 };
-                _db.Carts.Add(cartItem);
+                await _db.Carts.AddAsync(cartItem);
             }
             else
             {
@@ -85,45 +85,45 @@ namespace WebFood.Service.CartService
             // Save changes
             _db.SaveChanges();
         }
-        public List<Cart> GetCartItems()
+        public async Task<List<Cart>> GetCartItemsAsync()
         {
-            return _db.Carts.Include(c=>c.Meal).Where(
-                  cart => cart.CartId == ShoppingCartId).ToList();
+            return await _db.Carts.Include(c=>c.Meal).Where(
+                  cart => cart.CartId == ShoppingCartId).ToListAsync();
         }
-        public int GetCount()
+        public async Task<int> GetCountAsync()
         {
             // Get the count of each item in the cart and sum them up
-            int? count = (from cartItems in _db.Carts
+            int? count = await (from cartItems in _db.Carts
                           where cartItems.CartId == ShoppingCartId
-                          select (int?)cartItems.Count).Sum();
+                          select (int?)cartItems.Count).SumAsync();
             // Return 0 if all entries are null
             return count ?? 0;
         }
-        public decimal GetTotal()
+        public async Task<decimal> GetTotalAsync()
         {
             // Multiply album price by count of that album to get 
             // the current price for each of those albums in the cart
             // sum all album price totals to get the cart total
-            decimal? total = (from cartItems in _db.Carts
+            decimal? total = await (from cartItems in _db.Carts
                               where cartItems.CartId == ShoppingCartId
                               select (int?)cartItems.Count *
-                              cartItems.Meal.Price).Sum();
+                              cartItems.Meal.Price).SumAsync();
 
             return total ?? decimal.Zero;
         }
-        public Cart GetCartItem(int id)
+        public async Task<Cart> GetCartItemAsync(int id)
         {
-            return _db.Carts.Where(c => c.RecordId == id).FirstOrDefault();
+            return await _db.Carts.Where(c => c.RecordId == id).FirstOrDefaultAsync();
         }
 
-        public int CreateOrder(Order order)
+        public async Task<int> CreateOrderAsync(Order order)
         {
             decimal orderTotal = 0;
 
-            var cartItems = GetCartItems();
+            var cartItems = GetCartItemsAsync();
             // Iterate over the items in the cart, 
             // adding the order details for each
-            foreach (var item in cartItems)
+            foreach (var item in cartItems.Result)
             {
                 var orderDetail = new OrderDetail
                 {
@@ -135,7 +135,7 @@ namespace WebFood.Service.CartService
                 // Set the order total of the shopping cart
                 orderTotal += (item.Count * item.Meal.Price);
 
-                _db.OrderDetails.Add(orderDetail);
+                await _db.OrderDetails.AddAsync(orderDetail);
 
             }
             // Set the order's total to the orderTotal count

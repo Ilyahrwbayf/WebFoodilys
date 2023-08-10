@@ -27,9 +27,9 @@ namespace WebFood.Utility
 
             if (!db.UserRoles.Any())
             {
-                db.UserRoles.Add(new UserRole() { Id = 1, Name = "Customer" });
-                db.UserRoles.Add(new UserRole() { Id = 2, Name = "Manager" });
-                db.UserRoles.Add(new UserRole() { Id = 3, Name = "Administrator" });
+                db.UserRoles.Add(new UserRole() { Id = 1, Name = $"{Roles.Customer}" });
+                db.UserRoles.Add(new UserRole() { Id = 2, Name = $"{Roles.Manager}" });
+                db.UserRoles.Add(new UserRole() { Id = 3, Name = $"{Roles.Administator}" });
                 db.SaveChanges();
             }
 

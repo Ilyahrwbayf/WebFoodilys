@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Web libs 
+WebFood/wwwroot/lib
+
+# Uploaded Images
+WebFood/wwwroot/uploads

@@ -101,8 +101,6 @@ namespace WebFood.Controllers
                 };
             }
 
-
-
             return View();
         }
 
