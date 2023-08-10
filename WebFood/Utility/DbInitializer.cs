@@ -1,5 +1,6 @@
 ﻿using WebFood.Models.Entities;
 using WebFood.Models;
+using WebFood.Utility.PasswordHashers;
 
 namespace WebFood.Utility
 {
@@ -35,9 +36,10 @@ namespace WebFood.Utility
 
             if (!db.Users.Any())
             {
-                db.Users.Add(new User() { Id = 1, Email = "admin@admin.com", Password = PasswordHasher.Hash("admin") });
-                db.Users.Add(new User() { Id = 2, Email = "Managment@KFSmail.com", Password = PasswordHasher.Hash("123") });
-                db.Users.Add(new User() { Id = 3, Email = "Tester@mail.com", Password = PasswordHasher.Hash("123") });
+                PasswordHasherContext passwordHasher = new PasswordHasherContext(new Md5PasswordHasher());
+                db.Users.Add(new User() { Id = 1, Email = "admin@admin.com", Password = passwordHasher.Hash("admin") });
+                db.Users.Add(new User() { Id = 2, Email = "Managment@KFSmail.com", Password = passwordHasher.Hash("123") });
+                db.Users.Add(new User() { Id = 3, Email = "Tester@mail.com", Password = passwordHasher.Hash("123") });
                 db.SaveChanges();
             }
 

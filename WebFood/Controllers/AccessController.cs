@@ -6,7 +6,7 @@ using WebFood.Models.Entities;
 using WebFood.Models;
 using WebFood.Models.ViewModels;
 using WebFood.Service.UserService;
-using WebFood.Utility;
+using WebFood.Utility.PasswordHashers;
 
 namespace WebFood.Controllers
 {
@@ -43,7 +43,8 @@ namespace WebFood.Controllers
                 }
                 else
                 {
-                    loginViewModel.Password = PasswordHasher.Hash(loginViewModel.Password);
+                    PasswordHasherContext passwordHasher = new PasswordHasherContext(new Md5PasswordHasher());
+                    loginViewModel.Password = passwordHasher.Hash(loginViewModel.Password);
                     if (user.Password == loginViewModel.Password)
                     {
                         string role = _daoUser.GetUserRole(user.Id).Result;

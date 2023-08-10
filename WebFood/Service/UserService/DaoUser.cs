@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebFood.Models.Entities;
 using WebFood.Models.ViewModels;
-using WebFood.Utility;
 using WebFood.Models;
+using WebFood.Utility.PasswordHashers;
 
 namespace WebFood.Service.UserService
 {
@@ -25,7 +25,8 @@ namespace WebFood.Service.UserService
 
         public async void AddAsync(User user)
         {
-            user.Password = PasswordHasher.Hash(user.Password);
+            PasswordHasherContext passwordHasher = new PasswordHasherContext(new Md5PasswordHasher());
+            user.Password = passwordHasher.Hash(user.Password);
             await _db.Users.AddAsync(user);
             _db.SaveChanges();
             await _db.Profiles.AddAsync(new Profile { UserId = user.Id, RoleId = 1 });
