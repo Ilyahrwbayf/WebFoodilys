@@ -27,4 +27,8 @@ cartId setting in one place - done
 cart in restaurant view - done
 add to cart in restaurant by ajax - done
 
-cart
+cart - done
+
+Payment
+Only one restaurant 
+

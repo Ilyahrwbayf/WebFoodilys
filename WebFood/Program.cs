@@ -12,6 +12,7 @@ using WebFood.Service.CategoryOfMealService;
 using WebFood.Service.CartService;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
+using WebFood.Service.OrderService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,7 @@ builder.Services.AddTransient<IDaoCategoryOfMeal, DaoCategoryOfMeal>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ICartService, CartService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
 
 var app = builder.Build();
 
