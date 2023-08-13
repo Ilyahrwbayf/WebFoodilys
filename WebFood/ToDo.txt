@@ -29,6 +29,8 @@ add to cart in restaurant by ajax - done
 
 cart - done
 
-Payment
-Only one restaurant 
+Payment - done
+Restaurant Orders
+Only one restaurant
+Profile
 

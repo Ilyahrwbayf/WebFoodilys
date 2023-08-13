@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebFood.Models.Entities;
+using WebFood.Models.ViewModels;
 using WebFood.Service.CartService;
 using WebFood.Service.OrderService;
 using WebFood.Service.UserService;
@@ -13,7 +14,7 @@ namespace WebFood.Controllers
     [Authorize]
     public class OrderController : Controller
     {
-        private const string promoCode = "FREE";
+        private const string rightPromoCode = "FREE";
 
         private readonly IDaoUser _daoUser;
         private readonly IOrderService _orderSevice;
@@ -28,9 +29,51 @@ namespace WebFood.Controllers
             _cartService = cartService;
         }
 
-        public ActionResult AddressAndPayment()
+        public ActionResult OrderInfo()
         {
             if (_cartService.GetCartItemsAsync().Result.Any())
+            {
+                Profile profile = GetUserProfile();
+
+                return View(profile);
+            }
+            else
+            {
+                TempData["Message"] = "Корзина пуста";
+                return RedirectToAction("Cart", "ShoppingCart");
+            }
+
+        }
+
+        [HttpPost]
+        public ActionResult OrderInfo(Profile profile)
+        {
+            if (ModelState.IsValid)
+            {
+                Profile profileToUpdate = GetUserProfile();
+                profileToUpdate.Name = profile.Name;
+                profileToUpdate.DeliveryAdres = profile.DeliveryAdres;
+                profileToUpdate.Phone = profile.Phone;
+
+                _daoUser.UpdateProfile(profileToUpdate);
+
+                return RedirectToAction("Payment");
+            }
+
+            return View(profile);
+        }
+
+        public IActionResult Payment()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Payment(PaymentViewModel paymentView)
+        {
+            string promoCode = paymentView.PromoCode;
+
+            if (promoCode == rightPromoCode)
             {
                 Profile profile = GetUserProfile();
 
@@ -44,37 +87,19 @@ namespace WebFood.Controllers
                     Status = StatusHelper.statuses["Preparing"]
                 };
 
-                return View(order);
+                _orderSevice.AddAsync(order);
+                _cartService.CreateOrderAsync(order);
+
+                ViewBag.Order = $"Заказ номер {order.Id} оплачен и готовиться";
             }
             else
             {
-                TempData["Message"] = "Корзина пуста";
-                return RedirectToAction("Cart", "ShoppingCart");
+                ViewBag.Message = "Оплата не удалась, попробуйте снова";
             }
 
+            return View(paymentView);
         }
 
-        [HttpPost]
-        public ActionResult AddressAndPayment(Order order)
-        {
-
-            if (ModelState.IsValid)
-            {
-                Profile profile = GetUserProfile();
-                profile.Name = order.Profile.Name;
-
-                profile.DeliveryAdres = order.Profile.DeliveryAdres;
-                profile.Phone = order.Profile.Phone;
-                _daoUser.UpdateProfile(profile);
-
-                order.Profile = profile;
-
-                _orderSevice.AddAsync(order);
-                _cartService.CreateOrderAsync(order);
-            }
-
-            return View(order);
-        }
 
         private Profile GetUserProfile()
         {
