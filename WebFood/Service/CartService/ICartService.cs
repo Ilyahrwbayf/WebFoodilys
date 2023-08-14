@@ -16,6 +16,7 @@ namespace WebFood.Service.CartService
         public Task<decimal> GetTotalAsync();
         public Task<int> CreateOrderAsync(Order order);
         public void MigrateCart(string userName);
+        public int GetRestaurantId();
 
     }
 }

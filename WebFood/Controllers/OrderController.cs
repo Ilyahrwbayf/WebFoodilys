@@ -81,7 +81,7 @@ namespace WebFood.Controllers
                 {
                     ProfileId = profile.Id,
                     Profile = profile,
-                    RestaurantId = _cartService.GetCartItemsAsync().Result.First().RestaurantId,
+                    RestaurantId = _cartService.GetRestaurantId(),
                     TotalPrice = _cartService.GetTotalAsync().Result,
                     OrderDate = DateTime.Now,
                     Status = StatusHelper.statuses["Preparing"]

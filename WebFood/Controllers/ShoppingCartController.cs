@@ -101,6 +101,19 @@ namespace WebFood.Controllers
             return Ok();
         }
 
+        public IActionResult CheckRestaurantId(int mealId)
+        {
+            int restaurantId = _daoMeal.GetAsync(mealId).Result.RestaurantId;
+            int restaurantIdInCart = _cartService.GetRestaurantId();
+
+            bool correctRestaurant;
+            if (restaurantIdInCart == 0)
+                    correctRestaurant = true;
+            else
+                correctRestaurant = (restaurantId == restaurantIdInCart);       
+            return Json(correctRestaurant);
+        }
+
     }
 }
 

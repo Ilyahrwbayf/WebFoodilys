@@ -163,8 +163,19 @@ namespace WebFood.Service.CartService
             _db.SaveChanges();
         }
 
-    }
+        public int GetRestaurantId()
+        {
+            int restaurantId;
+            var cartItem = _db.Carts.Where(c => c.CartId == ShoppingCartId).FirstOrDefault();
+            if (cartItem != null)
+                restaurantId = cartItem.RestaurantId;
+            else
+                restaurantId = 0;
+            
+            return restaurantId;
+        }
 
+    }
 
 }
 

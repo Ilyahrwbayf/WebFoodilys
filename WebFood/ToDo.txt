@@ -30,7 +30,7 @@ add to cart in restaurant by ajax - done
 cart - done
 
 Payment - done
+Only one restaurant - done
 Restaurant Orders
-Only one restaurant
 Profile
 
