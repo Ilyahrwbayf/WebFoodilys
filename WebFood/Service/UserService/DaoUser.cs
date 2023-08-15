@@ -38,7 +38,12 @@ namespace WebFood.Service.UserService
             return  _db.Profiles.Include(p=>p.Role).FirstOrDefault(p=>p.UserId == userId).Role.Name;
         }
 
-        public Task<Profile> GetProfileAsync(int userId)
+        public Task<Profile> GetProfileAsync(int profileId)
+        {
+            return _db.Profiles.Where(p => p.Id == profileId).FirstOrDefaultAsync();
+        }
+
+        public Task<Profile> GetProfileByUserAsync(int userId)
         {
             return _db.Profiles.Where(p=>p.UserId==userId).FirstOrDefaultAsync();
         }

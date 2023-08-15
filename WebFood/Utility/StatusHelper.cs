@@ -4,6 +4,7 @@
     {
         public static readonly Dictionary<string, string> statuses = new Dictionary<string, string>()
         {
+            {"Processed","Обрабатывается"},
             {"Preparing","Готовиться"},
             {"InDelivery","Доставляется"},
             {"Delivered","Доставлено"},

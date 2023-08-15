@@ -15,6 +15,7 @@ using System.Security.Claims;
 using WebFood.Service.MealService;
 using WebFood.Service.CategoryOfMealService;
 using WebFood.Service.CartService;
+using WebFood.Service.OrderService;
 
 namespace WebFood.Controllers
 {
@@ -27,7 +28,7 @@ namespace WebFood.Controllers
         private readonly IDaoMeal _daoMeal;
         private readonly IDaoCategoryOfMeal _daoCategoryOfMeal;
         private readonly ICartService _cartService;
-
+        
         private readonly IConfiguration _config;
 
         public RestaurantController(IDaoRestaurant daoRestaurant,
@@ -219,8 +220,7 @@ namespace WebFood.Controllers
         }
 
 
-
-                                            // HELP METHODS
+        // HELP METHODS
 
 
         private SelectList GetTypesOfRestaurants()

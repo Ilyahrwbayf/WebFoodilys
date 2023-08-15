@@ -1,36 +1,4 @@
-﻿User Service - done 
-ModelState Check - done
-role - done
-authentification & authorization  - done
-password encryption - done
-db initilizer - done
-products - done
-update category fix - done
-icontains - done
-delete restaurant - done
-typeOfRestaurant controller - done
-meal controller - done
-meal service - done
-delete meal deletes image - done
-change meal image - done
-edit meal bug - fixed
-category of meal controller - done
-castegory of meal service - done
-categories in menu - done
-link menu and main in Restaurant view - done
-edit dbInitializer - done
-add to cart ajax action - done
-add to cart function on btn plus - done
-
-
-cartId setting in one place - done
-cart in restaurant view - done
-add to cart in restaurant by ajax - done
-
-cart - done
-
-Payment - done
-Only one restaurant - done
-Restaurant Orders
+﻿
+Restaurant Orders - done
 Profile
 

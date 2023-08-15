@@ -1,0 +1,37 @@
+﻿@using WebFood.Models.Entities
+@model List<Order>
+@{
+    ViewData["Title"] = "Заказы";
+}
+
+<h1 class="text-center">@ViewData["Title"]</h1>
+
+<div class="container-xl">
+   
+
+    <a class="text-decoration-none"
+        asp-controller="Restaurant"
+        asp-action="Restaurant"
+        asp-route-restaurantId="@Model.First().RestaurantId">
+        <i class="bi bi-arrow-left"></i>
+        <span class="">Назад</span>
+    </a>
+
+
+    @foreach(var order in Model)
+    {
+        <div class="card mt-3">
+            <div class="card-header">
+                Заказ №@order.Id
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@order.Status</h5>
+                <p class="card-text">@order.OrderDate</p>
+                <a asp-controller="Order" asp-action="RestaurantOrder"
+                  asp-route-orderId="@order.Id" class="btn btn-primary">О заказе</a>
+            </div>
+        </div>
+    }
+
+
+</div>

@@ -47,6 +47,9 @@
                 (this.User.IsInRole("Manager")
                 && this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.ManagerId.ToString()))
                 {
+                    <a asp-controller="Order" asp-action="RestaurantOrders"
+                       asp-route-restaurantId="@Model.Id">Заказы</a>
+                    <hr />
                     <a asp-controller="Restaurant" asp-action="Edit"
                        asp-route-restaurantId="@Model.Id">Редактировать информацию о ресторане</a>
                     <a asp-controller="Restaurant" asp-action="ChangeImage"
