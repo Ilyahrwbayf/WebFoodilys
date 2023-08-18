@@ -1,4 +1,8 @@
 ﻿
-Restaurant Orders - done
-Profile
+
+Profile info - done
+Profile Edit - done
+Profile Orders - done
+Cancel Order - done
+Repeat Order - done
 

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using WebFood.Models.Entities;
 using WebFood.Models.ViewModels;
 using WebFood.Service.CartService;
+using WebFood.Service.MealService;
 using WebFood.Service.OrderService;
 using WebFood.Service.RestaurantService;
 using WebFood.Service.UserService;
@@ -22,16 +23,19 @@ namespace WebFood.Controllers
         private readonly IOrderService _orderService;
         private readonly ICartService _cartService;
         private readonly IDaoRestaurant _daoRestaurant;
+        private readonly IDaoMeal _daoMeal;
 
         public OrderController(IDaoUser daoUser,
                                IOrderService orderService,
                                ICartService cartService,
-                               IDaoRestaurant daoRestaurant)
+                               IDaoRestaurant daoRestaurant,
+                               IDaoMeal daoMeal)
         {
             _daoUser = daoUser;
             _orderService = orderService;
             _cartService = cartService;
             _daoRestaurant = daoRestaurant;
+            _daoMeal = daoMeal;
         }
 
         public ActionResult OrderInfo()
@@ -166,6 +170,61 @@ namespace WebFood.Controllers
             }
 
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult ProfileOrders()
+        {
+            Profile profile = GetUserProfile();
+            var orders = _orderService
+                        .GetUserOrdersAsync(profile.Id)
+                        .Result
+                        .OrderByDescending(o => o.OrderDate)
+                        .ToList();
+
+            return View(orders);
+        }
+
+        public IActionResult ProfileOrder(int orderId)
+        {
+            Order order = _orderService.GetOrderAsync(orderId).Result;
+
+            Profile profile = _daoUser.GetProfileAsync(order.ProfileId).Result;
+            order.Profile = profile;
+
+            return View(order);
+        }
+
+        public IActionResult CancelOrder(int orderId)
+        {
+            Order order = _orderService.GetOrderAsync(orderId).Result;
+            order.Status = StatusHelper.statuses["Canceled"];
+
+            _orderService.Update(order);
+
+            TempData["Message"] = $"Заказ №{orderId} отменен";
+
+            return RedirectToAction("ProfileOrder", new {OrderId = orderId});
+        }
+
+        public async Task<IActionResult> RepeatOrderAsync(int orderId)
+        {
+            _cartService.EmptyCart();
+
+            Order order = _orderService.GetOrderAsync(orderId).Result;
+            
+            List<OrderDetail> orderDetails = order.OrderDetails.ToList();
+
+            foreach (var item in orderDetails)
+            {
+                Meal meal = _daoMeal.GetAsync(item.MealId).Result;
+                
+                for (int i = 0; i < item.Quantity; i++)
+                {
+                    await _cartService.AddToCartAsync(meal);
+                }
+            }
+
+            return RedirectToAction("Cart","ShoppingCart");
         }
 
         private Profile GetUserProfile()
