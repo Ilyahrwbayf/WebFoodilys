@@ -52,9 +52,19 @@
                         }
                         @if (this.User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Profile" asp-action="Profile">@this.User.FindFirstValue(ClaimTypes.Email)</a>
-                            </li>
+                            @if (!this.User.IsInRole($"{Roles.Manager}"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Profile" asp-action="Profile">@this.User.FindFirstValue(ClaimTypes.Email)</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark">@this.User.FindFirstValue(ClaimTypes.Email)</a>
+                                </li>
+                            }
+
                         }
                         @if (this.User.Identity.IsAuthenticated)
                         {

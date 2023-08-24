@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebFood.Models.Entities;
 using WebFood.Service.UserService;
+using WebFood.Utility;
 
 namespace WebFood.Controllers
 {
-    [Authorize]
+    [Authorize(Roles =$"{Roles.Administator},{Roles.Customer}")]
     public class ProfileController : Controller
     {
         private readonly IDaoUser _daoUser;

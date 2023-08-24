@@ -53,11 +53,12 @@ DbInitializer.Initilize(app);
 //Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
+    app.UseHsts();
     app.UseExceptionHandler("/Home/Error");
 }
 
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
