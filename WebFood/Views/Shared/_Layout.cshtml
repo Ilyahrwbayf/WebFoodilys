@@ -1,4 +1,5 @@
 ﻿@using System.Security.Claims;
+@using WebFood.Utility;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +20,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 
                     <ul class="navbar-nav col-6 justify-content-start">
-                        @if (this.User.IsInRole("Administrator"))
+                        @if (this.User.IsInRole($"{Roles.Administator}"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Home" asp-action="Admin">Панель администратора</a>
@@ -28,13 +29,15 @@
                     </ul>
 
                     <ul class="navbar-nav col-6 justify-content-end">
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="ShoppingCart" asp-action="Cart">
-                                <i class="bi bi-basket3"></i>
-                                Корзина
+                        @if (!this.User.IsInRole($"{Roles.Manager}"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="ShoppingCart" asp-action="Cart">
+                                    <i class="bi bi-basket3"></i>
+                                    Корзина
                                 </a>
-                        </li>
+                            </li>
+                        }
                         @if (!this.User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">

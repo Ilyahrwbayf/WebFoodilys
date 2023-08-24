@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting.Server;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -6,6 +7,7 @@ using WebFood.Models.Entities;
 using WebFood.Models.ViewModels;
 using WebFood.Service.CartService;
 using WebFood.Service.MealService;
+using WebFood.Utility;
 
 namespace WebFood.Controllers
 {
@@ -21,6 +23,9 @@ namespace WebFood.Controllers
 
         public IActionResult Cart()
         {
+            //Managers not allowed
+            if (User.IsInRole($"{Roles.Manager}")) return RedirectToAction("Index","Home");
+
             var viewModel = new ShoppingCartViewModel
             {
                 CartItems = _cartService.GetCartItemsAsync().Result,
