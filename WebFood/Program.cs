@@ -24,8 +24,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseMySql(builder.Configuration.GetConnectionString("MySqlServer"),
-        new MySqlServerVersion(new Version(8, 0, 31)));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PosgreSqlServer"));
 });
 builder.Services.AddAuthentication("Cookies").AddCookie(options =>
 {
