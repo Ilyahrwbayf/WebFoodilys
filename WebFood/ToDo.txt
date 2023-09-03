@@ -1,0 +1,8 @@
+﻿change db to elephant sql - done
+fix datetime - done
+fix keys - done
+commit
+merge dev to prod
+find asp free hosting
+deploy project
+place url on github

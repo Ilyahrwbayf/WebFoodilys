@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebFood", "WebFood\WebFood.csproj", "{A04F2C0A-ABAE-4A1A-A9D3-82CA33A3D346}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{50715174-02EC-4744-A719-A38F9832444F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A04F2C0A-ABAE-4A1A-A9D3-82CA33A3D346}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A04F2C0A-ABAE-4A1A-A9D3-82CA33A3D346}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A04F2C0A-ABAE-4A1A-A9D3-82CA33A3D346}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A04F2C0A-ABAE-4A1A-A9D3-82CA33A3D346}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50715174-02EC-4744-A719-A38F9832444F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50715174-02EC-4744-A719-A38F9832444F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50715174-02EC-4744-A719-A38F9832444F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50715174-02EC-4744-A719-A38F9832444F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {876D7E32-B149-4178-B59A-354CA72D3B19}
+	EndGlobalSection
+EndGlobal

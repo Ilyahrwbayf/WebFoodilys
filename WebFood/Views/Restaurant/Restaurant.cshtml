@@ -1,0 +1,237 @@
+﻿@using WebFood.Models.Entities
+@using System.Security.Claims;
+@using WebFood.Utility;
+@model Restaurant
+
+<div class="mt-3 container-xl">
+    <div class="row">
+        @*Menu*@
+        <div class="col-2">
+            <div class="sticky-top pt-3">
+
+                <div class="menu d-flex flex-column align-items-start p-3 pt-0">
+                    <a class="text-decoration-none" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-arrow-left"></i>
+                        <span class="">Назад</span>
+                    </a>
+                    <h2>Меню</h2>
+                    @foreach (var item in ViewBag.Menu)
+                    {
+                        <a href="#@item.Id" class="mt-3 btn btn-light btn-block">@item.Name</a>
+                    }
+ 
+                </div>
+            </div>
+        </div>
+        @*Main*@
+        <div class="col-7">
+
+            @*Message*@
+            <div class="sticky-top col-12 d-flex justify-content-center">
+                <div class="mt-3 toast-container position-absolute">
+                    <div class="toast bg-white align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body" id="update-message">
+                            </div>
+                            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            @*Restaurant Info*@
+            <div class="d-flex flex-column justify-content-center">
+                <img class="img-fluid" src="@Model.Imageurl" />
+                <h1 class="mt-2 text-center">@Model.Name</h1>
+                @if (this.User.IsInRole("Administrator") ||
+                (this.User.IsInRole("Manager")
+                && this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.ManagerId.ToString()))
+                {
+                    <a asp-controller="Order" asp-action="RestaurantOrders"
+                       asp-route-restaurantId="@Model.Id">Заказы</a>
+                    <hr />
+                    <a asp-controller="Restaurant" asp-action="Edit"
+                       asp-route-restaurantId="@Model.Id">Редактировать информацию о ресторане</a>
+                    <a asp-controller="Restaurant" asp-action="ChangeImage"
+                        asp-route-restaurantId="@Model.Id">Изменить обложку</a>
+                    <hr />
+                    <a asp-controller="Meal" asp-action="AddMeal"
+                    asp-route-restaurantId="@Model.Id">Добавить блюдо</a>
+                    <hr />
+                    <a asp-controller="CategoryOfMeal" asp-action="AddCategoryOfMeal"
+                       asp-route-restaurantId="@Model.Id">Добавить категорию</a>
+                    <a asp-controller="CategoryOfMeal" asp-action="EditCategoryOfMeal"
+                       asp-route-restaurantId="@Model.Id">Изменить категорию</a>
+                    <a class="text-danger" asp-controller="CategoryOfMeal" asp-action="DeleteCategoryOfMeal"
+                       asp-route-restaurantId="@Model.Id">Удалить категорию</a>
+                }
+            </div>
+            @*Meals*@
+            @foreach (var item in ViewBag.Menu)
+            {
+                <h3 class="mt-5" id="@item.Id">@item.Name</h3>
+                <div class="mt-3 row row-cols-4 g-2">
+                    @{
+                        IEnumerable<Meal> meals = ((IEnumerable<Meal>)ViewBag.Meals).Where(m => m.CategoryId == item.Id);
+
+                    }
+                    @foreach (var meal in meals)
+                    {
+                        <div class="card">
+                            <img src="@meal.ImageUrl" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                    @meal.Name
+                                </h4>
+                                @if (meal.Description != null)
+                                {
+                                    <div>@meal.Description</div>
+                                }
+                                @if (meal.Weight != 0 || meal.Calories != 0)
+                                {
+                                    <div class="d-flex justify-content-between">
+                                        @if (meal.Weight != 0)
+                                        {
+                                            <span>@meal.Weight г</span>
+                                        }
+                                        @if (meal.Calories != 0)
+                                        {
+                                            <span>@meal.Calories ккал</span>
+                                        }
+                                    </div>
+                                }
+                                <h5>
+                                    @{
+                                        string price = String.Format("{0:C0}",meal.Price);
+                                    }
+                                    @price
+                                </h5>
+                                <a data-mealId="@meal.Id" class="add-to-cart-btn btn btn-primary">Добавить</a>
+                                @if (this.User.IsInRole("Administrator") ||
+                               (this.User.IsInRole("Manager")
+                               && this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.ManagerId.ToString()))
+                                {
+                                    <div class="d-flex flex-column">
+                                        <a class="mt-2" asp-controller="Meal" asp-action="EditMeal" asp-route-mealId="@meal.Id">Изменить</a>
+                                        <a class="mt-2" asp-controller="Meal" asp-action="ChangeMealImg" asp-route-mealId="@meal.Id">Изменить изображение</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+        </div>
+        @*Cart*@
+        <div class="col-3">
+            <div class="sticky-top pt-3">
+                <div class="menu d-flex flex-column align-items-start p-3 pt-0">
+                    <h2>Корзина</h2>
+                    @*Manager can't use Cart*@
+                    @if (!User.IsInRole($"{Roles.Manager}"))
+                    {
+                        <a href="" id="empty-cart">Очистить корзину</a>
+                        <div class="mini-cart">
+                            <partial name="MiniCart" model="ViewBag.Cart"/>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Недоступно для менеджера</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+@*Manager can't use Cart*@
+@if (!User.IsInRole($"{Roles.Manager}"))
+{
+    @section Scripts{
+
+    <partial name="_plusMinusInputScripts" />
+
+    <script>
+
+        // toast message init
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl)
+        })
+
+        //add to card btn
+
+        $('.add-to-cart-btn').click(function (e) {
+            e.preventDefault();
+
+            // Get the meal id from the btn
+            var mealId = $(this).attr("data-mealId");
+
+
+            $.post("/ShoppingCart/CheckRestaurantId", { "mealId": mealId },
+                function (data) {
+                    if (data) {
+                        $.post("/ShoppingCart/AddToCart", { "id": mealId },
+                            function (data) {
+                                // Update the page elements
+                                $('#item-count-' + data.addedId).val(data.itemCount);
+                                $('#cart-total').text(data.cartTotal);
+                                $('#update-message').text(data.message);
+                                $('#cart-status').text('Cart (' + data.cartCount + ')');
+
+                                //If new element in cart
+                                if (data.itemCount == 1) {
+                                    //Refresh mini cart
+                                    RefreshMiniCart();
+                                }
+
+                            });
+                    }
+                    else {
+                        $('#update-message').text("В корзине уже находяться блюда из другого ресторана");
+                        toastList.forEach(toast => toast.show());
+                    }
+                });
+        });
+
+
+        // Empty cart
+
+        $('#empty-cart').click(function (e) {
+            e.preventDefault();
+            $.post("/ShoppingCart/EmptyCartAjax",
+                function (data) {
+                    // Update the page elements
+                    $('#cart-total').text(0);
+                    //Refresh mini cart
+                    RefreshMiniCart();
+
+                });
+        });
+
+        //Refresh Mini Cart
+        function RefreshMiniCart() {
+            $(".mini-cart").empty();
+            $.post("/ShoppingCart/MiniCart",
+                function (data) {
+                    // Append mini cart
+                    $(".mini-cart").append(data);
+                    // Make buttons clickable
+                    $('.btn-number').click(function (e) {
+                        e.preventDefault();
+                        BtnNumber.call($(this));
+
+                    });
+                });
+        }
+
+    </script>
+    }
+}
+

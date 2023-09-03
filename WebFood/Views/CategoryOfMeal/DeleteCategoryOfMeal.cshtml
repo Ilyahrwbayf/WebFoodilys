@@ -1,0 +1,35 @@
+﻿@using WebFood.Models.Entities
+@model CategoryOfMeal
+@{
+    ViewData["Title"] = "Удалить категорию меню";
+}
+
+<h1 class="text-center">@ViewData["Title"]</h1>
+
+<div class="container-xl mt-3">
+    <div class="d-flex justify-content-center">
+        <div class="col-10 col-sm-6 col-md-6 col-lg-4">
+
+            <form asp-controller="CategoryOfMeal" asp-action="DeleteCategoryOfMeal" method="post">
+
+                <div class="d-flex flex-column">
+
+                    <label asp-for="Name">Категория</label>
+                    <select class="form-select" asp-for="Id" asp-items="ViewBag.Categories"></select>
+
+                    <input type="hidden" asp-for="RestaurantId" />
+
+
+                    <button class="mt-3 btn btn-danger">Удалить</button>
+                    <a class="mt-3" asp-controller="Restaurant" asp-action="Restaurant" asp-route-restaurantId="@Model.RestaurantId">Назад</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <partial name="_ValidationScriptsPartial" />
+}
