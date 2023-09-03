@@ -367,3 +367,7 @@ WebFood/wwwroot/lib
 
 # Uploaded Images
 WebFood/wwwroot/uploads
+
+# Config files
+appsettings.Development.json
+appsettings.json
