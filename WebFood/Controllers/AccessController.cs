@@ -6,18 +6,30 @@ using WebFood.Models.Entities;
 using WebFood.Models;
 using WebFood.Models.ViewModels;
 using WebFood.Service.UserService;
-using WebFood.Utility;
+using WebFood.Utility.PasswordHashers;
+using WebFood.Service.CartService;
 
 namespace WebFood.Controllers
 {
     public class AccessController : Controller
     {
         private readonly IDaoUser _daoUser;
+        private readonly ICartService _cartSevice;
+        private string CartSessionKey = "CardId";
 
-        public AccessController(IDaoUser daoUser)
+        public AccessController(IDaoUser daoUser, ICartService cartService)
         {
             _daoUser = daoUser;
+            _cartSevice = cartService;
         }
+
+        private void MigrateShoppingCart(string userEmail)
+        {
+            // Associate shopping cart items with logged-in user
+            _cartSevice.MigrateCart(userEmail);
+            HttpContext.Session.SetString(CartSessionKey, userEmail);
+        }
+
 
         public IActionResult Login()
         {
@@ -43,7 +55,10 @@ namespace WebFood.Controllers
                 }
                 else
                 {
-                    loginViewModel.Password = PasswordHasher.Hash(loginViewModel.Password);
+                    //Hash password
+                    PasswordHasherContext passwordHasher = new PasswordHasherContext(new Md5PasswordHasher());
+                    loginViewModel.Password = passwordHasher.Hash(loginViewModel.Password);
+
                     if (user.Password == loginViewModel.Password)
                     {
                         string role = _daoUser.GetUserRole(user.Id).Result;
@@ -65,6 +80,10 @@ namespace WebFood.Controllers
 
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                             new ClaimsPrincipal(identity), properties);
+
+
+                        MigrateShoppingCart(loginViewModel.Email);
+
 
                         return RedirectToAction("Index", "Home");
                     }
@@ -101,14 +120,16 @@ namespace WebFood.Controllers
                 };
             }
 
-
-
             return View();
         }
 
         public async Task<IActionResult> LogOut()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            
+            Guid tempCartId = Guid.NewGuid();
+            HttpContext.Session.SetString(CartSessionKey, tempCartId.ToString());
+
             return RedirectToAction("Index", "Home");
         }
 

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="WebFood.Models.Entities.Restaurant">
-    <Position X="5.5" Y="2.5" Width="1.5" />
+    <Position X="6.25" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACQAAAAAAgAAAAAAAIAAQAAAAABAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Entities\Restaurant.cs</FileName>
@@ -11,7 +11,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="WebFood.Models.Entities.RestaurantType">
-    <Position X="5.25" Y="0.5" Width="1.75" />
+    <Position X="6.5" Y="0.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>IAACAAAAAAAAAAAAAAAAAAAAAAAAAAAgAQAEAAAAAAA=</HashCode>
       <FileName>Models\Entities\RestaurantType.cs</FileName>
@@ -22,7 +22,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="WebFood.Models.Entities.TypeOfRestaurant">
-    <Position X="8.25" Y="0.5" Width="1.5" />
+    <Position X="9" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Entities\TypeOfRestaurant.cs</FileName>
@@ -36,9 +36,9 @@
     </TypeIdentifier>
   </Class>
   <Class Name="WebFood.Models.Entities.Order">
-    <Position X="5.75" Y="5.5" Width="1.5" />
+    <Position X="6.25" Y="6" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAACAAAEAAAAAAAAAAAAAAAAAAAAQAABABAEAAAAgAA=</HashCode>
+      <HashCode>KAACAAAEAAAAAAAAABAAAAAAAAAAQAAAABAEAAAAgAA=</HashCode>
       <FileName>Models\Entities\Order.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -46,11 +46,11 @@
       <Property Name="Restaurant" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="WebFood.Models.Entities.OrderMeal">
-    <Position X="8.75" Y="4" Width="1.5" />
+  <Class Name="WebFood.Models.Entities.OrderDetail">
+    <Position X="8.75" Y="5.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAECAAAAAAAAAAAAAAAAAAAAAgAAAAAQAAAAAAAAAAA=</HashCode>
-      <FileName>Models\Entities\OrderMeal.cs</FileName>
+      <HashCode>MAECAAAAAAAAAAAAAAAAAAAAAgAAAAAQAAAAgAAAAAA=</HashCode>
+      <FileName>Models\Entities\OrderDetail.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Order" />
@@ -58,7 +58,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="WebFood.Models.Entities.Meal">
-    <Position X="11" Y="2.25" Width="1.5" />
+    <Position X="11.5" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAACQAAAAQAgAgAAAAAAAAQAACAAAAAAAgAEIAAAAAA=</HashCode>
       <FileName>Models\Entities\Meal.cs</FileName>
@@ -80,9 +80,9 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="WebFood.Models.Entities.CategoryOfMeal">
-    <Position X="11" Y="6.75" Width="1.5" />
+    <Position X="14.75" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>IAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAAAA=</HashCode>
       <FileName>Models\Entities\CategoryOfMeal.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -92,6 +92,17 @@
       <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Entities\UserRole.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="WebFood.Models.Entities.Cart">
+    <Position X="9.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAQAAgAAAAAQAAAEAAIACAA=</HashCode>
+      <FileName>Models\Entities\Cart.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Meal" />
+      <Property Name="Restaurant" />
+    </ShowAsAssociation>
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

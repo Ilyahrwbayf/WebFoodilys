@@ -31,6 +31,12 @@
                     <select class="mt-2 form-select" asp-for="CategoryId" asp-items="ViewBag.RestaurantCategories"></select>
 
                     <button class="mt-3 btn btn-primary">Подтвердить</button>
+                    @if (this.User.IsInRole("Administrator"))
+                    {
+                        <a class="mt-3 btn btn-danger" asp-controller="Restaurant" asp-action="Delete" asp-route-restaurantId="@Model.Restaurant.Id">Удалить Ресторан</a>
+                        
+                    }
+
                     <a class="mt-3" asp-controller="Restaurant" asp-action="Restaurant" asp-route-restaurantId="@Model.Restaurant.Id">Назад</a>
                  </div>
 

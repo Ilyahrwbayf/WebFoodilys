@@ -18,9 +18,18 @@ namespace WebFood.Service.RestaurantService
             _db.SaveChanges();
         }
 
-        public void DeleteAsync(int id)
+        public void Delete(Restaurant restaurant)
         {
-            throw new NotImplementedException();
+            string filePath = "wwwroot/" + restaurant.Imageurl;
+
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            _db.Restaurants.Remove(restaurant);
+            _db.SaveChanges();
         }
 
         public async Task<List<Restaurant>> GetAllAsync()
