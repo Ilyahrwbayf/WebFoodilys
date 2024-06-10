@@ -18,7 +18,7 @@
 
  <p>
 <b>Используемые технологии:</b>
-<li>Язык: C#;</li>
+<li>Язык: Kotlin;</li>
 <li>Backend-framework – ASP.NET MVC;</li>
 <li>Frontend – HTML, CSS, Bootstrap, JavaScript, Jquery;</li>
 <li>СУБД – PostgreSQL (облачная база данных на сервисе ElephantSQL);</li>
